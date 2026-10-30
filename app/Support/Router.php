@@ -104,7 +104,7 @@ final class Router
     public static function dispatch(string $baseDir, string $entidad, string $accion): void
     {
         if (!isset(self::CONTROLLERS[$entidad])) {
-            echo '<p>Entidad no v·lida.</p>';
+            echo '<p>Entidad no v√°lida.</p>';
             return;
         }
 
@@ -126,7 +126,7 @@ final class Router
 
         $controller = new $className();
 
-        // SEGURIDAD (S3): Verificar que el mÈtodo exista y sea estrictamente PUBLIC
+        // SEGURIDAD (S3): Verificar que el m√©todo exista y sea estrictamente PUBLIC
         if (method_exists($controller, $accion)) {
             $reflection = new ReflectionMethod($controller, $accion);
             if ($reflection->isPublic() && !$reflection->isStatic() && !$reflection->isConstructor()) {
@@ -136,6 +136,6 @@ final class Router
         }
 
         http_response_code(404);
-        echo '<p>La acciÛn solicitada no existe o no est· permitida.</p>';
+        echo '<p>La acci√≥n solicitada no existe o no est√° permitida.</p>';
     }
 }

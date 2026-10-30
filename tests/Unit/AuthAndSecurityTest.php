@@ -57,7 +57,7 @@ final class AuthAndSecurityTest extends TestCase
             'confirmar_password' => '654321',
         ];
 
-        $this->assertSame('Las contraseÒas no coinciden.', AuthValidator::validateRegistro($data));
+        $this->assertSame('Las contrase√±as no coinciden.', AuthValidator::validateRegistro($data));
     }
 
     public function testRouterClassifiesPublicAndAdminRoutes(): void

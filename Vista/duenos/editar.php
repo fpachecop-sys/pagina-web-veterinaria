@@ -83,6 +83,7 @@
 <div class="card">
   <h2>✏️ Editar Dueño</h2>
   <form action="index.php?entidad=dueno&accion=actualizar" method="POST">
+            <?= \App\Support\Csrf::field() ?>
     <input type="hidden" name="dni" value="<?= htmlspecialchars($dueno['dni']) ?>">
 
     <div class="mb-3">

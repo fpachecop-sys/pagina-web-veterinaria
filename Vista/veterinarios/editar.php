@@ -83,6 +83,7 @@
 <div class="card">
   <h2>✏️ Editar Veterinario</h2>
   <form action="index.php?entidad=veterinario&accion=actualizar" method="POST">
+            <?= \App\Support\Csrf::field() ?>
     <input type="hidden" name="id" value="<?= htmlspecialchars($veterinario['id']) ?>">
 
     <div class="mb-3">

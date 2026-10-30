@@ -32,7 +32,7 @@ final class Database
             return self::$instance;
         } catch (\Throwable $e) {
             Logger::error('Error al conectar con la base de datos', $e);
-            throw new RuntimeException('No se pudo establecer conexión con la base de datos.');
+            throw new RuntimeException('No se pudo establecer conexiÃ³n con la base de datos.');
         }
     }
 }

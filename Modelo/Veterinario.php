@@ -1,66 +1,36 @@
 <?php
-require_once 'Servicios/conexion.php';
 
-class Veterinario {
-    
-    public static function obtenerTodos() {
-        $conn = conexion::conectar();
-        $sql = "SELECT id, nombre, especialidad, correo, telefono, fecha_registro 
-                FROM veterinarios 
-                ORDER BY fecha_registro DESC";
-        $resultado = $conn->query($sql);
-        
-        $veterinarios = [];
-        while ($fila = $resultado->fetch_assoc()) {
-            $veterinarios[] = $fila;
-        }
-        
-        $conn->close();
-        return $veterinarios;
+declare(strict_types=1);
+
+require_once __DIR__ . '/../Servicios/conexion.php';
+
+use App\Repositories\VeterinarioRepository;
+use App\Support\Database;
+
+class Veterinario
+{
+    public static function listarTodos(): array
+    {
+        return (new VeterinarioRepository(Database::getConnection()))->listAllActive();
     }
-    
-    public static function obtenerPorId($id) {
-        $conn = conexion::conectar();
-        $stmt = $conn->prepare("SELECT * FROM veterinarios WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $resultado = $stmt->get_result()->fetch_assoc();
-        $stmt->close();
-        $conn->close();
-        return $resultado;
+
+    public static function guardar(string $nombre, string $especialidad, string $correo, string $telefono): bool
+    {
+        return (new VeterinarioRepository(Database::getConnection()))->create($nombre, $especialidad, $correo, $telefono);
     }
-    
-    public static function agregar($nombre, $especialidad, $correo, $telefono) {
-        $conn = conexion::conectar();
-        $stmt = $conn->prepare("INSERT INTO veterinarios (nombre, especialidad, correo, telefono) 
-                                VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $nombre, $especialidad, $correo, $telefono);
-        $resultado = $stmt->execute();
-        $stmt->close();
-        $conn->close();
-        return $resultado;
+
+    public static function obtenerPorId(int|string $id): ?array
+    {
+        return (new VeterinarioRepository(Database::getConnection()))->findById((int) $id);
     }
-    
-    public static function actualizar($id, $nombre, $especialidad, $correo, $telefono) {
-        $conn = conexion::conectar();
-        $stmt = $conn->prepare("UPDATE veterinarios 
-                                SET nombre=?, especialidad=?, correo=?, telefono=? 
-                                WHERE id=?");
-        $stmt->bind_param("ssssi", $nombre, $especialidad, $correo, $telefono, $id);
-        $resultado = $stmt->execute();
-        $stmt->close();
-        $conn->close();
-        return $resultado;
+
+    public static function actualizar(int|string $id, string $nombre, string $especialidad, string $correo, string $telefono): bool
+    {
+        return (new VeterinarioRepository(Database::getConnection()))->update((int) $id, $nombre, $especialidad, $correo, $telefono);
     }
-    
-    public static function eliminar($id) {
-        $conn = conexion::conectar();
-        $stmt = $conn->prepare("DELETE FROM veterinarios WHERE id=?");
-        $stmt->bind_param("i", $id);
-        $resultado = $stmt->execute();
-        $stmt->close();
-        $conn->close();
-        return $resultado;
+
+    public static function eliminar(int|string $id): bool
+    {
+        return (new VeterinarioRepository(Database::getConnection()))->deactivate((int) $id);
     }
 }
-?>

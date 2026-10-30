@@ -25,7 +25,7 @@ class Usuario
     public static function logout(): array
     {
         Session::destroy();
-        return ['exito' => true, 'mensaje' => 'SesiÛn cerrada exitosamente'];
+        return ['exito' => true, 'mensaje' => 'Sesi√≥n cerrada exitosamente'];
     }
 
     public static function estaAutenticado(): bool

@@ -49,12 +49,12 @@ class ControladorUsuario
 
         Session::start();
         if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
-            Session::setFlash('error', 'Token de seguridad inválido.');
+            Session::setFlash('error', 'Token de seguridad invÃ¡lido.');
             header('Location: index.php?entidad=usuario&accion=perfil');
             exit();
         }
 
-        // SEGURIDAD (S2 - Prevención de IDOR): El ID jamás se toma de $_POST['id'], sino de la sesión
+        // SEGURIDAD (S2 - PrevenciÃ³n de IDOR): El ID jamÃ¡s se toma de $_POST['id'], sino de la sesiÃ³n
         $usuarioActual = Usuario::obtenerUsuarioActual();
         $idSesion = (int) $usuarioActual['id'];
 
@@ -87,7 +87,7 @@ class ControladorUsuario
 
         Session::start();
         if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
-            Session::setFlash('error', 'Token de seguridad inválido.');
+            Session::setFlash('error', 'Token de seguridad invÃ¡lido.');
             header('Location: index.php?entidad=usuario&accion=perfil');
             exit();
         }
@@ -100,7 +100,7 @@ class ControladorUsuario
         $confirmarPassword = (string) ($_POST['confirmar_password'] ?? '');
 
         if ($passwordNueva !== $confirmarPassword) {
-            Session::setFlash('error', 'Las contraseñas nuevas no coinciden.');
+            Session::setFlash('error', 'Las contraseÃ±as nuevas no coinciden.');
             header('Location: index.php?entidad=usuario&accion=perfil');
             exit();
         }

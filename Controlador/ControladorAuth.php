@@ -40,7 +40,7 @@ class ControladorAuth
 
         Session::start();
         if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
-            Session::setFlash('error', 'Token de seguridad inv·lido. Por favor intenta nuevamente.');
+            Session::setFlash('error', 'Token de seguridad inv√°lido. Por favor intenta nuevamente.');
             header('Location: index.php?entidad=auth&accion=mostrarLogin');
             exit();
         }
@@ -72,7 +72,7 @@ class ControladorAuth
 
         Session::start();
         if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
-            Session::setFlash('error', 'La sesiÛn del formulario expirÛ. Intenta nuevamente.');
+            Session::setFlash('error', 'La sesi√≥n del formulario expir√≥. Intenta nuevamente.');
             header('Location: index.php?entidad=auth&accion=mostrarRegistro');
             exit();
         }

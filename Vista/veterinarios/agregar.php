@@ -83,6 +83,7 @@
 <div class="card">
   <h2>⚕️ Agregar Veterinario</h2>
   <form action="index.php?entidad=veterinario&accion=guardarNuevo" method="POST">
+            <?= \App\Support\Csrf::field() ?>
     <div class="mb-3">
       <label for="nombre" class="form-label">Nombre Completo</label>
       <input type="text" name="nombre" id="nombre" class="form-control" 

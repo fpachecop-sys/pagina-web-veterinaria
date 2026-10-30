@@ -35,8 +35,8 @@ final class ErrorHandler
         }
 
         echo '<div style="font-family:sans-serif;text-align:center;padding:50px;">';
-        echo '<h1>Ocurrió un problema inesperado</h1>';
-        echo '<p>Nuestro equipo técnico ha sido notificado. Por favor, intenta nuevamente en unos momentos.</p>';
+        echo '<h1>OcurriÃ³ un problema inesperado</h1>';
+        echo '<p>Nuestro equipo tÃ©cnico ha sido notificado. Por favor, intenta nuevamente en unos momentos.</p>';
         echo '<a href="index.php">Volver al inicio</a>';
         echo '</div>';
     }

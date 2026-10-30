@@ -27,19 +27,19 @@ final class AuthValidator
             return 'El apellido es obligatorio y no debe superar los 100 caracteres.';
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 100) {
-            return 'Ingresa un correo electrónico válido.';
+            return 'Ingresa un correo electrÃ³nico vÃ¡lido.';
         }
         if (!preg_match('/^\d{8}$/', $dni)) {
-            return 'El DNI debe contener exactamente 8 dígitos numéricos.';
+            return 'El DNI debe contener exactamente 8 dÃ­gitos numÃ©ricos.';
         }
         if (!preg_match('/^\d{9}$/', $telefono)) {
-            return 'El teléfono debe contener exactamente 9 dígitos numéricos.';
+            return 'El telÃ©fono debe contener exactamente 9 dÃ­gitos numÃ©ricos.';
         }
         if ($direccion === '' || strlen($direccion) > 200) {
-            return 'La dirección es obligatoria y no debe superar los 200 caracteres.';
+            return 'La direcciÃ³n es obligatoria y no debe superar los 200 caracteres.';
         }
         if ($password !== $confirmar) {
-            return 'Las contraseñas no coinciden.';
+            return 'Las contraseÃ±as no coinciden.';
         }
 
         return self::validatePasswordStrength($password);
@@ -63,13 +63,13 @@ final class AuthValidator
             return 'El apellido es obligatorio.';
         }
         if (!preg_match('/^\d{8}$/', $dni)) {
-            return 'El DNI debe tener exactamente 8 dígitos.';
+            return 'El DNI debe tener exactamente 8 dÃ­gitos.';
         }
         if (!preg_match('/^\d{9}$/', $telefono)) {
-            return 'El teléfono debe tener exactamente 9 dígitos.';
+            return 'El telÃ©fono debe tener exactamente 9 dÃ­gitos.';
         }
         if ($direccion === '' || strlen($direccion) > 200) {
-            return 'La dirección es obligatoria.';
+            return 'La direcciÃ³n es obligatoria.';
         }
 
         return null;
@@ -78,7 +78,7 @@ final class AuthValidator
     public static function validatePasswordStrength(string $password): ?string
     {
         if (strlen($password) < 6) {
-            return 'La contraseña debe tener al menos 6 caracteres.';
+            return 'La contraseÃ±a debe tener al menos 6 caracteres.';
         }
         return null;
     }

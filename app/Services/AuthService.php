@@ -92,13 +92,13 @@ final class AuthService
         $rol = isset($datos['rol']) && $datos['rol'] === 'administrador' ? 'administrador' : 'usuario';
 
         if ($this->usuarios->existsEmail($email)) {
-            return ['exito' => false, 'mensaje' => 'El correo electrÛnico ya est· registrado.'];
+            return ['exito' => false, 'mensaje' => 'El correo electr√≥nico ya est√° registrado.'];
         }
 
         if ($this->usuarios->existsDniInUsuarios($dni) || $this->usuarios->existsDniInDuenos($dni)) {
             return [
                 'exito'   => false,
-                'mensaje' => 'El DNI ingresado ya se encuentra registrado en el sistema. Si ya eres cliente, contacta a la clÌnica.',
+                'mensaje' => 'El DNI ingresado ya se encuentra registrado en el sistema. Si ya eres cliente, contacta a la cl√≠nica.',
             ];
         }
 
@@ -119,7 +119,7 @@ final class AuthService
         } catch (Throwable $e) {
             $db->rollback();
             Logger::error('Error en transaccion de registro de usuario', $e);
-            return ['exito' => false, 'mensaje' => 'No se pudo completar el registro. IntÈntalo de nuevo.'];
+            return ['exito' => false, 'mensaje' => 'No se pudo completar el registro. Int√©ntalo de nuevo.'];
         }
     }
 
@@ -179,12 +179,12 @@ final class AuthService
 
         $usuario = $this->usuarios->findById($idUsuarioSesion);
         if ($usuario === null || !password_verify($actual, (string) $usuario['password'])) {
-            return ['exito' => false, 'mensaje' => 'La contraseÒa actual es incorrecta.'];
+            return ['exito' => false, 'mensaje' => 'La contrase√±a actual es incorrecta.'];
         }
 
         $nuevoHash = password_hash($nueva, PASSWORD_DEFAULT);
         $this->usuarios->updatePassword($idUsuarioSesion, $nuevoHash);
 
-        return ['exito' => true, 'mensaje' => 'ContraseÒa actualizada exitosamente.'];
+        return ['exito' => true, 'mensaje' => 'Contrase√±a actualizada exitosamente.'];
     }
 }

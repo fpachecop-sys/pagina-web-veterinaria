@@ -83,6 +83,7 @@
 <div class="card">
   <h2>🐾 Agregar Mascota</h2>
   <form action="index.php?entidad=mascota&accion=guardarNuevo" method="POST">
+            <?= \App\Support\Csrf::field() ?>
     <div class="mb-3">
       <label for="nombre" class="form-label">Nombre de la Mascota</label>
       <input type="text" name="nombre" id="nombre" class="form-control" 

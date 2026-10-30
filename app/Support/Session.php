@@ -40,7 +40,7 @@ final class Session
         if (isset($_SESSION['_last_activity']) && ($now - (int) $_SESSION['_last_activity']) > self::TIMEOUT_SECONDS) {
             self::destroy();
             session_start();
-            self::setFlash('error', 'Tu sesión ha expirado por inactividad. Por favor inicia sesión nuevamente.');
+            self::setFlash('error', 'Tu sesiÃ³n ha expirado por inactividad. Por favor inicia sesiÃ³n nuevamente.');
         }
         $_SESSION['_last_activity'] = $now;
     }

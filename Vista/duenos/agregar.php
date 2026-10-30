@@ -83,6 +83,7 @@
 <div class="card">
   <h2>➕ Agregar Dueño</h2>
   <form action="index.php?entidad=dueno&accion=guardarNuevo" method="POST">
+            <?= \App\Support\Csrf::field() ?>
     <div class="mb-3">
       <label for="dni" class="form-label">DNI</label>
       <input type="text" name="dni" id="dni" class="form-control" 
