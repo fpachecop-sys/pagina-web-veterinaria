@@ -132,6 +132,7 @@
             <div class="perfil-card">
                 <h3>✏️ Editar Información</h3>
                 <form action="index.php?entidad=usuario&accion=editarPerfil" method="POST">
+                    <?= \App\Support\Csrf::field() ?>
                     <input type="hidden" name="id" value="<?= $usuario['id'] ?>">
                     
                     <div class="form-group">

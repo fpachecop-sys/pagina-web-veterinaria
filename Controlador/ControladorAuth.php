@@ -1,128 +1,110 @@
 <?php
-require_once 'Modelo/Usuario.php';
 
-class ControladorAuth {
-    
-    // Mostrar página de login
-    public function mostrarLogin() {
-        // Si ya está logueado, redirigir según rol
-        if (Usuario::estaLogueado()) {
+declare(strict_types=1);
+
+require_once __DIR__ . '/../Modelo/Usuario.php';
+
+use App\Support\Csrf;
+use App\Support\Session;
+
+class ControladorAuth
+{
+    public function mostrarLogin(): void
+    {
+        if (Usuario::estaAutenticado()) {
             if (Usuario::esAdministrador()) {
-                header("Location: index.php?entidad=admin&accion=dashboard");
+                header('Location: index.php?entidad=admin&accion=dashboard');
             } else {
-                header("Location: index.php?entidad=usuario&accion=dashboard");
+                header('Location: index.php?entidad=usuario&accion=dashboard');
             }
-            exit;
+            exit();
         }
-        require("Vista/auth/login.php");
+        include __DIR__ . '/../Vista/auth/login.php';
     }
-    
-    // Procesar login
-    public function procesarLogin() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['email'] ?? '';
-            $password = $_POST['password'] ?? '';
-            
-            if (empty($email) || empty($password)) {
-                $_SESSION['error'] = 'Por favor complete todos los campos';
-                header("Location: index.php?entidad=auth&accion=mostrarLogin");
-                exit;
-            }
-            
-            $resultado = Usuario::login($email, $password);
-            
-            if ($resultado['success']) {
-                // Redirigir según rol
-                if ($resultado['rol'] === 'administrador') {
-                    header("Location: index.php?entidad=admin&accion=dashboard");
-                } else {
-                    header("Location: index.php?entidad=usuario&accion=dashboard");
-                }
-                exit;
+
+    public function mostrarRegistro(): void
+    {
+        if (Usuario::estaAutenticado()) {
+            header('Location: index.php?entidad=usuario&accion=dashboard');
+            exit();
+        }
+        include __DIR__ . '/../Vista/auth/registro.php';
+    }
+
+    public function procesarLogin(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?entidad=auth&accion=mostrarLogin');
+            exit();
+        }
+
+        Session::start();
+        if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
+            Session::setFlash('error', 'Token de seguridad inv�lido. Por favor intenta nuevamente.');
+            header('Location: index.php?entidad=auth&accion=mostrarLogin');
+            exit();
+        }
+
+        $email = trim((string) ($_POST['email'] ?? ''));
+        $password = (string) ($_POST['password'] ?? '');
+
+        $resultado = Usuario::login($email, $password);
+
+        if ($resultado['exito']) {
+            if (($resultado['rol'] ?? '') === 'administrador') {
+                header('Location: index.php?entidad=admin&accion=dashboard');
             } else {
-                session_start();
-                $_SESSION['error'] = $resultado['message'];
-                header("Location: index.php?entidad=auth&accion=mostrarLogin");
-                exit;
+                header('Location: index.php?entidad=usuario&accion=dashboard');
             }
+        } else {
+            Session::setFlash('error', $resultado['mensaje']);
+            header('Location: index.php?entidad=auth&accion=mostrarLogin');
         }
+        exit();
     }
-    
-    // Mostrar formulario de registro
-    public function mostrarRegistro() {
-        // Si ya está logueado, redirigir
-        if (Usuario::estaLogueado()) {
-            if (Usuario::esAdministrador()) {
-                header("Location: index.php?entidad=admin&accion=dashboard");
-            } else {
-                header("Location: index.php?entidad=usuario&accion=dashboard");
-            }
-            exit;
+
+    public function procesarRegistro(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?entidad=auth&accion=mostrarRegistro');
+            exit();
         }
-        require("Vista/auth/registro.php");
-    }
-    
-    // Procesar registro
-    public function procesarRegistro() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nombre = $_POST['nombre'] ?? '';
-            $apellido = $_POST['apellido'] ?? '';
-            $email = $_POST['email'] ?? '';
-            $password = $_POST['password'] ?? '';
-            $password_confirm = $_POST['password_confirm'] ?? '';
-            $telefono = $_POST['telefono'] ?? '';
-            $direccion = $_POST['direccion'] ?? '';
-            $dni = $_POST['dni'] ?? '';
-            
-            // Validaciones
-            if (empty($nombre) || empty($apellido) || empty($email) || empty($password) || empty($dni)) {
-                session_start();
-                $_SESSION['error'] = 'Por favor complete todos los campos obligatorios';
-                header("Location: index.php?entidad=auth&accion=mostrarRegistro");
-                exit;
-            }
-            
-            if ($password !== $password_confirm) {
-                session_start();
-                $_SESSION['error'] = 'Las contraseñas no coinciden';
-                header("Location: index.php?entidad=auth&accion=mostrarRegistro");
-                exit;
-            }
-            
-            if (strlen($password) < 6) {
-                session_start();
-                $_SESSION['error'] = 'La contraseña debe tener al menos 6 caracteres';
-                header("Location: index.php?entidad=auth&accion=mostrarRegistro");
-                exit;
-            }
-            
-            if (strlen($dni) !== 8 || !ctype_digit($dni)) {
-                session_start();
-                $_SESSION['error'] = 'El DNI debe tener 8 dígitos';
-                header("Location: index.php?entidad=auth&accion=mostrarRegistro");
-                exit;
-            }
-            
-            // Registrar usuario
-            $resultado = Usuario::registrar($nombre, $apellido, $email, $password, $telefono, $direccion, $dni);
-            
-            session_start();
-            if ($resultado['success']) {
-                $_SESSION['success'] = 'Registro exitoso. Ya puede iniciar sesión';
-                header("Location: index.php?entidad=auth&accion=mostrarLogin");
-            } else {
-                $_SESSION['error'] = $resultado['message'];
-                header("Location: index.php?entidad=auth&accion=mostrarRegistro");
-            }
-            exit;
+
+        Session::start();
+        if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
+            Session::setFlash('error', 'La sesi�n del formulario expir�. Intenta nuevamente.');
+            header('Location: index.php?entidad=auth&accion=mostrarRegistro');
+            exit();
         }
+
+        $datos = [
+            'nombre'             => trim((string) ($_POST['nombre'] ?? '')),
+            'apellido'           => trim((string) ($_POST['apellido'] ?? '')),
+            'email'              => trim((string) ($_POST['email'] ?? '')),
+            'password'           => (string) ($_POST['password'] ?? ''),
+            'confirmar_password' => (string) ($_POST['confirmar_password'] ?? ''),
+            'telefono'           => trim((string) ($_POST['telefono'] ?? '')),
+            'direccion'          => trim((string) ($_POST['direccion'] ?? '')),
+            'dni'                => trim((string) ($_POST['dni'] ?? '')),
+            'rol'                => 'usuario',
+        ];
+
+        $resultado = Usuario::registrar($datos);
+
+        if ($resultado['exito']) {
+            Session::setFlash('registro_exitoso', $resultado['mensaje']);
+            header('Location: index.php?entidad=auth&accion=mostrarLogin');
+        } else {
+            Session::setFlash('error', $resultado['mensaje']);
+            header('Location: index.php?entidad=auth&accion=mostrarRegistro');
+        }
+        exit();
     }
-    
-    // Cerrar sesión
-    public function logout() {
+
+    public function logout(): void
+    {
         Usuario::logout();
-        header("Location: index.php");
-        exit;
+        header('Location: index.php?entidad=home&accion=ver');
+        exit();
     }
 }
-?>

@@ -1,220 +1,219 @@
 <?php
-require_once 'Modelo/Usuario.php';
-require_once 'Modelo/Mascota.php';
-require_once 'Modelo/Cita.php';
 
-class ControladorUsuario {
-    
-    // Dashboard del usuario
-    public function dashboard() {
-        // Verificar que está logueado
-        if (!Usuario::estaLogueado()) {
-            header("Location: index.php?entidad=auth&accion=mostrarLogin");
-            exit;
+declare(strict_types=1);
+
+require_once __DIR__ . '/../Modelo/Usuario.php';
+require_once __DIR__ . '/../Modelo/Mascota.php';
+require_once __DIR__ . '/../Modelo/Cita.php';
+require_once __DIR__ . '/../Modelo/Dueno.php';
+
+use App\Services\AuthService;
+use App\Support\Csrf;
+use App\Support\Database;
+use App\Support\Session;
+
+class ControladorUsuario
+{
+    public function __construct()
+    {
+        if (!Usuario::estaAutenticado()) {
+            header('Location: index.php?entidad=auth&accion=mostrarLogin');
+            exit();
         }
-        
+    }
+
+    public function dashboard(): void
+    {
         $usuario = Usuario::obtenerUsuarioActual();
-        $id_usuario = $usuario['id'];
-        
-        // Obtener estadísticas del usuario
-        $stats = $this->obtenerEstadisticasUsuario($id_usuario);
-        
-        require("Vista/usuario/dashboard.php");
+        $dni = (string) ($usuario['dni'] ?? '');
+        $misMascotas = $this->obtenerMascotasPorDni($dni);
+        $misCitas = $this->obtenerCitasPorDni($dni);
+        $estadisticas = $this->obtenerEstadisticasUsuario($dni);
+
+        include __DIR__ . '/../Vista/usuario/dashboard.php';
     }
-    
-    // Ver perfil
-    public function verPerfil() {
-        if (!Usuario::estaLogueado()) {
-            header("Location: index.php?entidad=auth&accion=mostrarLogin");
-            exit;
-        }
-        
-        $usuario_actual = Usuario::obtenerUsuarioActual();
-        $usuario = Usuario::obtenerPorId($usuario_actual['id']);
-        
-        require("Vista/usuario/perfil.php");
+
+    public function perfil(): void
+    {
+        $usuarioActual = Usuario::obtenerUsuarioActual();
+        $usuario = Usuario::obtenerPorId((int) $usuarioActual['id']);
+        include __DIR__ . '/../Vista/usuario/perfil.php';
     }
-    
-    // Editar perfil
-    public function editarPerfil() {
-        if (!Usuario::estaLogueado()) {
-            header("Location: index.php?entidad=auth&accion=mostrarLogin");
-            exit;
+
+    public function editarPerfil(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?entidad=usuario&accion=perfil');
+            exit();
         }
-        
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'];
-            $nombre = $_POST['nombre'];
-            $apellido = $_POST['apellido'];
-            $telefono = $_POST['telefono'];
-            $direccion = $_POST['direccion'];
-            $dni = $_POST['dni'];
-            
-            if (Usuario::actualizarPerfil($id, $nombre, $apellido, $telefono, $direccion, $dni)) {
-                // Actualizar datos en sesión
-                $_SESSION['usuario_nombre'] = $nombre;
-                $_SESSION['usuario_apellido'] = $apellido;
-                
-                $_SESSION['success'] = 'Perfil actualizado correctamente';
-            } else {
-                $_SESSION['error'] = 'Error al actualizar perfil';
-            }
-            
-            header("Location: index.php?entidad=usuario&accion=verPerfil");
-            exit;
+
+        Session::start();
+        if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
+            Session::setFlash('error', 'Token de seguridad inv�lido.');
+            header('Location: index.php?entidad=usuario&accion=perfil');
+            exit();
         }
+
+        // SEGURIDAD (S2 - Prevenci�n de IDOR): El ID jam�s se toma de $_POST['id'], sino de la sesi�n
+        $usuarioActual = Usuario::obtenerUsuarioActual();
+        $idSesion = (int) $usuarioActual['id'];
+
+        $datos = [
+            'nombre'    => $_POST['nombre'] ?? '',
+            'apellido'  => $_POST['apellido'] ?? '',
+            'telefono'  => $_POST['telefono'] ?? '',
+            'direccion' => $_POST['direccion'] ?? '',
+            'dni'       => $_POST['dni'] ?? '',
+        ];
+
+        $resultado = (new AuthService())->actualizarPerfil($idSesion, $datos);
+
+        if ($resultado['exito']) {
+            Session::setFlash('exito', $resultado['mensaje']);
+        } else {
+            Session::setFlash('error', $resultado['mensaje']);
+        }
+
+        header('Location: index.php?entidad=usuario&accion=perfil');
+        exit();
     }
-    
-    // Cambiar contraseña
-    public function cambiarPassword() {
-        if (!Usuario::estaLogueado()) {
-            header("Location: index.php?entidad=auth&accion=mostrarLogin");
-            exit;
+
+    public function cambiarPassword(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?entidad=usuario&accion=perfil');
+            exit();
         }
-        
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $usuario_actual = Usuario::obtenerUsuarioActual();
-            $password_actual = $_POST['password_actual'];
-            $password_nueva = $_POST['password_nueva'];
-            $password_confirmar = $_POST['password_confirmar'];
-            
-            if ($password_nueva !== $password_confirmar) {
-                $_SESSION['error'] = 'Las contraseñas no coinciden';
-                header("Location: index.php?entidad=usuario&accion=verPerfil");
-                exit;
-            }
-            
-            $resultado = Usuario::cambiarPassword($usuario_actual['id'], $password_actual, $password_nueva);
-            
-            if ($resultado['success']) {
-                $_SESSION['success'] = $resultado['message'];
-            } else {
-                $_SESSION['error'] = $resultado['message'];
-            }
-            
-            header("Location: index.php?entidad=usuario&accion=verPerfil");
-            exit;
+
+        Session::start();
+        if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
+            Session::setFlash('error', 'Token de seguridad inv�lido.');
+            header('Location: index.php?entidad=usuario&accion=perfil');
+            exit();
         }
+
+        $usuarioActual = Usuario::obtenerUsuarioActual();
+        $idSesion = (int) $usuarioActual['id'];
+
+        $passwordActual = (string) ($_POST['password_actual'] ?? '');
+        $passwordNueva = (string) ($_POST['password_nueva'] ?? '');
+        $confirmarPassword = (string) ($_POST['confirmar_password'] ?? '');
+
+        if ($passwordNueva !== $confirmarPassword) {
+            Session::setFlash('error', 'Las contrase�as nuevas no coinciden.');
+            header('Location: index.php?entidad=usuario&accion=perfil');
+            exit();
+        }
+
+        $resultado = Usuario::cambiarPassword($idSesion, $passwordActual, $passwordNueva);
+
+        if ($resultado['exito']) {
+            Session::setFlash('exito', $resultado['mensaje']);
+        } else {
+            Session::setFlash('error', $resultado['mensaje']);
+        }
+
+        header('Location: index.php?entidad=usuario&accion=perfil');
+        exit();
     }
-    
-    // Mis mascotas
-    public function misMascotas() {
-        if (!Usuario::estaLogueado()) {
-            header("Location: index.php?entidad=auth&accion=mostrarLogin");
-            exit;
-        }
-        
+
+    public function misMascotas(): void
+    {
         $usuario = Usuario::obtenerUsuarioActual();
-        $mascotas = $this->obtenerMascotasDelUsuario($usuario['id']);
-        
-        require("Vista/usuario/mis_mascotas.php");
+        $mascotas = $this->obtenerMascotasPorDni((string) ($usuario['dni'] ?? ''));
+        include __DIR__ . '/../Vista/usuario/mis_mascotas.php';
     }
-    
-    // Mis citas
-    public function misCitas() {
-        if (!Usuario::estaLogueado()) {
-            header("Location: index.php?entidad=auth&accion=mostrarLogin");
-            exit;
-        }
-        
+
+    public function misCitas(): void
+    {
         $usuario = Usuario::obtenerUsuarioActual();
-        $citas = $this->obtenerCitasDelUsuario($usuario['id']);
-        
-        require("Vista/usuario/mis_citas.php");
+        $citas = $this->obtenerCitasPorDni((string) ($usuario['dni'] ?? ''));
+        include __DIR__ . '/../Vista/usuario/mis_citas.php';
     }
-    
-    // === MÉTODOS AUXILIARES ===
-    
-    private function obtenerEstadisticasUsuario($id_usuario) {
-        $conn = conexion::conectar();
-        $stats = [];
-        
-        // Total de mascotas del usuario
-        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM mascotas m 
-                                INNER JOIN duenos d ON m.dni_dueno = d.dni 
-                                WHERE d.id_usuario = ?");
-        $stmt->bind_param("i", $id_usuario);
+
+    private function obtenerMascotasPorDni(string $dni): array
+    {
+        if ($dni === '') {
+            return [];
+        }
+        $conn = Database::getConnection();
+        $sql = "SELECT id, nombre, especie, raza, edad, dni_dueno, fecha_registro FROM mascotas WHERE dni_dueno = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $dni);
         $stmt->execute();
-        $stats['total_mascotas'] = $stmt->get_result()->fetch_assoc()['total'];
-        $stmt->close();
-        
-        // Total de citas del usuario
-        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM citas c
-                                INNER JOIN mascotas m ON c.id_mascota = m.id
-                                INNER JOIN duenos d ON m.dni_dueno = d.dni
-                                WHERE d.id_usuario = ?");
-        $stmt->bind_param("i", $id_usuario);
-        $stmt->execute();
-        $stats['total_citas'] = $stmt->get_result()->fetch_assoc()['total'];
-        $stmt->close();
-        
-        // Citas pendientes
-        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM citas c
-                                INNER JOIN mascotas m ON c.id_mascota = m.id
-                                INNER JOIN duenos d ON m.dni_dueno = d.dni
-                                WHERE d.id_usuario = ? AND c.estado = 'Pendiente'");
-        $stmt->bind_param("i", $id_usuario);
-        $stmt->execute();
-        $stats['citas_pendientes'] = $stmt->get_result()->fetch_assoc()['total'];
-        $stmt->close();
-        
-        // Próxima cita
-        $stmt = $conn->prepare("SELECT c.*, m.nombre as nombre_mascota, v.nombre as nombre_veterinario
-                                FROM citas c
-                                INNER JOIN mascotas m ON c.id_mascota = m.id
-                                INNER JOIN veterinarios v ON c.id_veterinario = v.id
-                                INNER JOIN duenos d ON m.dni_dueno = d.dni
-                                WHERE d.id_usuario = ? AND c.estado = 'Pendiente'
-                                AND c.fecha >= CURDATE()
-                                ORDER BY c.fecha ASC, c.hora ASC
-                                LIMIT 1");
-        $stmt->bind_param("i", $id_usuario);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $stats['proxima_cita'] = $resultado->num_rows > 0 ? $resultado->fetch_assoc() : null;
-        $stmt->close();
-        
-        $conn->close();
-        return $stats;
-    }
-    
-    private function obtenerMascotasDelUsuario($id_usuario) {
-        $conn = conexion::conectar();
-        $stmt = $conn->prepare("SELECT m.* FROM mascotas m
-                                INNER JOIN duenos d ON m.dni_dueno = d.dni
-                                WHERE d.id_usuario = ?
-                                ORDER BY m.fecha_registro DESC");
-        $stmt->bind_param("i", $id_usuario);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
+        $res = $stmt->get_result();
         $mascotas = [];
-        while ($fila = $resultado->fetch_assoc()) {
+        while ($fila = $res->fetch_assoc()) {
             $mascotas[] = $fila;
         }
         $stmt->close();
-        $conn->close();
         return $mascotas;
     }
-    
-    private function obtenerCitasDelUsuario($id_usuario) {
-        $conn = conexion::conectar();
-        $stmt = $conn->prepare("SELECT c.*, m.nombre as nombre_mascota, v.nombre as nombre_veterinario
-                                FROM citas c
-                                INNER JOIN mascotas m ON c.id_mascota = m.id
-                                INNER JOIN veterinarios v ON c.id_veterinario = v.id
-                                INNER JOIN duenos d ON m.dni_dueno = d.dni
-                                WHERE d.id_usuario = ?
-                                ORDER BY c.fecha DESC, c.hora DESC");
-        $stmt->bind_param("i", $id_usuario);
+
+    private function obtenerCitasPorDni(string $dni): array
+    {
+        if ($dni === '') {
+            return [];
+        }
+        $conn = Database::getConnection();
+        $sql = "SELECT c.id, c.fecha, c.hora, c.motivo, c.estado, 
+                       m.nombre AS nombre_mascota, m.especie, 
+                       v.nombre AS nombre_veterinario, v.especialidad 
+                FROM citas c 
+                INNER JOIN mascotas m ON c.id_mascota = m.id 
+                INNER JOIN veterinarios v ON c.id_veterinario = v.id 
+                WHERE m.dni_dueno = ? 
+                ORDER BY c.fecha DESC, c.hora DESC";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $dni);
         $stmt->execute();
-        $resultado = $stmt->get_result();
+        $res = $stmt->get_result();
         $citas = [];
-        while ($fila = $resultado->fetch_assoc()) {
+        while ($fila = $res->fetch_assoc()) {
             $citas[] = $fila;
         }
         $stmt->close();
-        $conn->close();
         return $citas;
     }
+
+    private function obtenerEstadisticasUsuario(string $dni): array
+    {
+        if ($dni === '') {
+            return ['total_mascotas' => 0, 'citas_pendientes' => 0, 'citas_atendidas' => 0, 'proxima_cita' => null];
+        }
+        $conn = Database::getConnection();
+        $hoyLima = date('Y-m-d');
+        $stats = [];
+
+        $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM mascotas WHERE dni_dueno = ?");
+        $stmt->bind_param('s', $dni);
+        $stmt->execute();
+        $stats['total_mascotas'] = (int) ($stmt->get_result()->fetch_assoc()['total'] ?? 0);
+        $stmt->close();
+
+        $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM citas c INNER JOIN mascotas m ON c.id_mascota = m.id WHERE m.dni_dueno = ? AND c.estado = 'Pendiente'");
+        $stmt->bind_param('s', $dni);
+        $stmt->execute();
+        $stats['citas_pendientes'] = (int) ($stmt->get_result()->fetch_assoc()['total'] ?? 0);
+        $stmt->close();
+
+        $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM citas c INNER JOIN mascotas m ON c.id_mascota = m.id WHERE m.dni_dueno = ? AND c.estado = 'Atendida'");
+        $stmt->bind_param('s', $dni);
+        $stmt->execute();
+        $stats['citas_atendidas'] = (int) ($stmt->get_result()->fetch_assoc()['total'] ?? 0);
+        $stmt->close();
+
+        $stmt = $conn->prepare("SELECT c.fecha, c.hora, m.nombre AS nombre_mascota, v.nombre AS nombre_veterinario 
+                                FROM citas c 
+                                INNER JOIN mascotas m ON c.id_mascota = m.id 
+                                INNER JOIN veterinarios v ON c.id_veterinario = v.id 
+                                WHERE m.dni_dueno = ? AND c.estado = 'Pendiente' AND c.fecha >= ? 
+                                ORDER BY c.fecha ASC, c.hora ASC LIMIT 1");
+        $stmt->bind_param('ss', $dni, $hoyLima);
+        $stmt->execute();
+        $stats['proxima_cita'] = $stmt->get_result()->fetch_assoc() ?: null;
+        $stmt->close();
+
+        return $stats;
+    }
 }
-?>

@@ -14,10 +14,13 @@ $db   = $_ENV['DB_DATABASE'] ?? 'veterinaria_x';
 $user = $_ENV['DB_USERNAME'] ?? 'root';
 $pass = $_ENV['DB_PASSWORD'] ?? '';
 
-$mysqli = new mysqli($host, $user, $pass, $db, $port);
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-if ($mysqli->connect_error) {
-    fwrite(STDERR, "Error conectando a la BD: " . $mysqli->connect_error . PHP_EOL);
+try {
+    $mysqli = new mysqli($host, $user, $pass, $db, $port);
+    $mysqli->set_charset('utf8mb4');
+} catch (\Throwable $e) {
+    fwrite(STDERR, "Error conectando a la BD: " . $e->getMessage() . PHP_EOL);
     exit(1);
 }
 
@@ -35,7 +38,11 @@ while ($row = $res->fetch_assoc()) {
     $applied[] = $row['version'];
 }
 
-$migrationsDir = dirname(__DIR__) . '/database/migrations';
+$migrationsDir = dirname(__DIR__) . '/Database/migrations';
+if (!is_dir($migrationsDir)) {
+    $migrationsDir = dirname(__DIR__) . '/database/migrations';
+}
+
 $files = glob($migrationsDir . '/*.sql');
 sort($files);
 
@@ -47,39 +54,23 @@ foreach ($files as $filePath) {
     }
 
     echo "Ejecutando: $version... ";
-    
-    // Obtener y limpiar queries individuales
     $rawSql = file_get_contents($filePath);
+    
+    // Limpiar comentarios de línea antes de separar por punto y coma
+    $lines = explode("\n", $rawSql);
+    $cleanLines = array_filter($lines, fn($line) => !str_starts_with(trim($line), '--'));
+    $cleanSql = implode("\n", $cleanLines);
+
     $queries = array_filter(
-        array_map('trim', explode(';', $rawSql)),
+        array_map('trim', explode(';', $cleanSql)),
         fn($q) => !empty($q)
     );
 
-    // Desactivar FK checks para la sesión
     $mysqli->query("SET FOREIGN_KEY_CHECKS = 0");
 
     try {
         foreach ($queries as $query) {
             $mysqli->query($query);
-        }
-
-        // Restaurar FKs que hayan quedado sueltas
-        $citasFkCheck = $mysqli->query("
-            SELECT CONSTRAINT_NAME 
-            FROM information_schema.TABLE_CONSTRAINTS 
-            WHERE TABLE_SCHEMA = '{$db}' AND TABLE_NAME = 'citas' AND CONSTRAINT_NAME = 'citas_ibfk_1'
-        ");
-        if ($citasFkCheck && $citasFkCheck->num_rows === 0) {
-            $mysqli->query("ALTER TABLE `citas` ADD CONSTRAINT `citas_ibfk_1` FOREIGN KEY (`id_mascota`) REFERENCES `mascotas` (`id`) ON DELETE CASCADE");
-        }
-
-        $mascotasFkCheck = $mysqli->query("
-            SELECT CONSTRAINT_NAME 
-            FROM information_schema.TABLE_CONSTRAINTS 
-            WHERE TABLE_SCHEMA = '{$db}' AND TABLE_NAME = 'mascotas' AND CONSTRAINT_NAME = 'mascotas_ibfk_1'
-        ");
-        if ($mascotasFkCheck && $mascotasFkCheck->num_rows === 0) {
-            $mysqli->query("ALTER TABLE `mascotas` ADD CONSTRAINT `mascotas_ibfk_1` FOREIGN KEY (`dni_dueno`) REFERENCES `duenos` (`dni`) ON DELETE CASCADE");
         }
 
         $stmt = $mysqli->prepare("INSERT INTO `schema_migrations` (`version`) VALUES (?)");
@@ -102,5 +93,5 @@ foreach ($files as $filePath) {
 if ($executedCount === 0) {
     echo "No hay migraciones pendientes." . PHP_EOL;
 } else {
-    echo "Migraciones completadas con éxito." . PHP_EOL;
+    echo "Migraciones completadas con exito." . PHP_EOL;
 }

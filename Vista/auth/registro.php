@@ -117,9 +117,7 @@
             </div>
             
             <?php
-            if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+            \App\Support\Session::start();
             if (isset($_SESSION['error'])): ?>
                 <div class="alert alert-danger">
                     <?= htmlspecialchars($_SESSION['error']) ?>
@@ -128,6 +126,7 @@
             <?php endif; ?>
             
             <form action="index.php?entidad=auth&accion=procesarRegistro" method="POST">
+                <?= \App\Support\Csrf::field() ?>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="nombre" class="form-label required-field">Nombre</label>

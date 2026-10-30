@@ -1,315 +1,185 @@
 <?php
-// ============================================
-// INICIO DE SESIÓN Y CONFIGURACIÓN
-// ============================================
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/Modelo/Usuario.php';
+
+use App\Middleware\SessionGuardMiddleware;
+use App\Support\Env;
+use App\Support\ErrorHandler;
+use App\Support\Helper;
+use App\Support\Router;
+use App\Support\Session;
+
+Env::load(__DIR__);
+ErrorHandler::register();
+Session::start();
+Router::sendSecurityHeaders();
+SessionGuardMiddleware::verifyActiveUser();
+
+$entidad = isset($_GET['entidad']) ? trim((string) $_GET['entidad']) : 'home';
+$accion  = isset($_GET['accion']) ? trim((string) $_GET['accion']) : 'ver';
+
+$estaAutenticado = Usuario::estaAutenticado();
+$esAdmin         = Usuario::esAdministrador();
+$usuarioActual   = Usuario::obtenerUsuarioActual();
+
+Router::authorize($entidad, $accion, $estaAutenticado, $esAdmin);
+
+if (Router::isStandaloneView($entidad, $accion)) {
+    Router::dispatch(__DIR__, $entidad, $accion);
+    exit();
 }
-
-require_once 'Modelo/Usuario.php';
-
-// Obtener parámetros
-$entidad = $_GET['entidad'] ?? 'home';
-$accion = $_GET['accion'] ?? 'ver';
-
-// ============================================
-// RUTAS PÚBLICAS
-// ============================================
-$rutasPublicas = [
-    'home' => ['ver'],
-    'auth' => ['mostrarLogin', 'procesarLogin', 'mostrarRegistro', 'procesarRegistro', 'logout'],
-    'ubicacion' => ['ver'],
-    'reclamacion' => ['mostrarFormulario', 'guardar'],
-    'sugerencia' => ['mostrarFormulario', 'guardar'],
-    'veterinario' => ['verPublico'],
-    'video' => ['verPublico']
-];
-
-$esRutaPublica = isset($rutasPublicas[$entidad]) &&
-                 in_array($accion, $rutasPublicas[$entidad]);
-
-// Si no es ruta pública y no está logueado → redirigir
-if (!$esRutaPublica && !Usuario::estaLogueado()) {
-    $_SESSION['error'] = 'Debes iniciar sesión para acceder a esta página.';
-    header("Location: index.php?entidad=auth&accion=mostrarLogin");
-    exit;
-}
-
-// ============================================
-// RUTAS DE ADMINISTRADOR
-// ============================================
-$rutasAdministrador = [
-    'admin', 'dueno', 'mascota', 'cita',
-    'veterinario', 'reporte'
-];
-
-if (in_array($entidad, $rutasAdministrador)) {
-    if (!Usuario::esAdministrador()) {
-        $_SESSION['error'] = 'No tienes permisos para esta sección.';
-        header("Location: index.php?entidad=usuario&accion=dashboard");
-        exit;
-    }
-}
-
-// ============================================
-// ACCIONES QUE HACEN REDIRECT (EJECUTAR ANTES DEL HTML)
-// ============================================
-$accionesRedirect = [
-    'guardarNuevo', 'actualizar', 'eliminar', 'cambiarEstado',
-    'procesarLogin', 'procesarRegistro', 'logout',
-    'guardar', 'editarPerfil', 'cambiarPassword', 'cambiarEstadoUsuario'
-];
-
-// Si la acción hace redirect, ejecutar antes del HTML
-if (in_array($accion, $accionesRedirect) || $entidad === 'auth' || $entidad === 'home') {
-    $entidadCapitalizada = ucfirst(strtolower($entidad));
-    $archivo = "Controlador/Controlador{$entidadCapitalizada}.php";
-    
-    if (file_exists($archivo)) {
-        require_once $archivo;
-        $clase = "Controlador{$entidadCapitalizada}";
-        
-        if (class_exists($clase)) {
-            $controlador = new $clase();
-            
-            if (method_exists($controlador, $accion)) {
-                $controlador->$accion();
-                exit; // Importante: detener ejecución después del redirect
-            }
-        }
-    }
-}
-
-// ============================================
-// AQUÍ COMIENZA EL HTML (solo para páginas de visualización)
-// ============================================
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Veterinaria Ralah Pets</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --primary: #16a085;
-      --primary-dark: #0e7664;
-      --secondary: #3498db;
-      --accent: #f39c12;
-      --dark: #2c3e50;
-      --white: #ffffff;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      color: var(--dark);
-    }
-
-    /* Header */
-    header {
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-      padding: 20px 0;
-      margin-bottom: 30px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    header h2 {
-      color: var(--primary);
-      text-align: center;
-      margin-bottom: 15px;
-      font-weight: 700;
-      font-size: 2em;
-    }
-
-    nav {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    nav a {
-      color: var(--dark);
-      text-decoration: none;
-      padding: 12px 24px;
-      font-weight: 500;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-
-    nav a:hover {
-      color: var(--primary);
-      background: rgba(22, 160, 133, 0.1);
-    }
-
-    nav a::after {
-      content: '';
-      position: absolute;
-      bottom: 5px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 2px;
-      background: var(--primary);
-      transition: width 0.3s ease;
-    }
-
-    nav a:hover::after {
-      width: 70%;
-    }
-
-    /* Main Container */
-    main {
-      max-width: 1200px;
-      margin: 0 auto;
-      background-color: var(--white);
-      padding: 35px;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-      animation: fadeIn 0.6s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Footer */
-    footer {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      color: var(--dark);
-      text-align: center;
-      padding: 25px 20px;
-      margin-top: 40px;
-      box-shadow: 0 -2px 20px rgba(0,0,0,0.1);
-    }
-
-    footer p {
-      font-weight: 500;
-      margin: 0;
-    }
-
-    /* Alerts */
-    .alert {
-      border-radius: 12px;
-      padding: 20px;
-      margin: 20px 0;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      header h2 {
-        font-size: 1.5em;
-      }
-
-      nav {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      nav a {
-        width: 200px;
-        text-align: center;
-      }
-
-      main {
-        padding: 20px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veterinaria Ralah Pets - Sistema de Gesti�n</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            font-weight: 500;
+        }
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: white;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-logout:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+        .flash-banner {
+            max-width: 1200px;
+            margin: 1rem auto 0;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .flash-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+        .flash-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+    </style>
 </head>
 <body>
-
     <header>
-        <h2>🐾 Veterinaria Ralah Pets</h2>
-        <nav>
-            <a href="index.php?entidad=home&accion=ver">Inicio</a>
+        <div class="header-container">
+            <a href="index.php?entidad=home&accion=ver" class="logo">
+                <i class="fas fa-paw"></i>
+                <div>
+                    <h1>Ralah Pets</h1>
+                    <span>Cl�nica Veterinaria</span>
+                </div>
+            </a>
 
-            <?php if (Usuario::estaLogueado()): ?>
+            <nav>
+                <ul>
+                    <?php if ($estaAutenticado): ?>
+                        <?php if ($esAdmin): ?>
+                            <li><a href="index.php?entidad=admin&accion=dashboard" class="<?= $entidad === 'admin' && $accion === 'dashboard' ? 'active' : '' ?>"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                            <li><a href="index.php?entidad=dueno&accion=listar" class="<?= $entidad === 'dueno' ? 'active' : '' ?>"><i class="fas fa-users"></i> Due�os</a></li>
+                            <li><a href="index.php?entidad=mascota&accion=listar" class="<?= $entidad === 'mascota' ? 'active' : '' ?>"><i class="fas fa-dog"></i> Mascotas</a></li>
+                            <li><a href="index.php?entidad=cita&accion=listar" class="<?= $entidad === 'cita' ? 'active' : '' ?>"><i class="fas fa-calendar-check"></i> Citas</a></li>
+                            <li><a href="index.php?entidad=veterinario&accion=listar" class="<?= $entidad === 'veterinario' ? 'active' : '' ?>"><i class="fas fa-user-md"></i> Veterinarios</a></li>
+                            <li><a href="index.php?entidad=reporte&accion=ver" class="<?= $entidad === 'reporte' ? 'active' : '' ?>"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+                        <?php else: ?>
+                            <li><a href="index.php?entidad=usuario&accion=dashboard" class="<?= $entidad === 'usuario' && $accion === 'dashboard' ? 'active' : '' ?>"><i class="fas fa-home"></i> Inicio</a></li>
+                            <li><a href="index.php?entidad=usuario&accion=misMascotas" class="<?= $accion === 'misMascotas' ? 'active' : '' ?>"><i class="fas fa-paw"></i> Mis Mascotas</a></li>
+                            <li><a href="index.php?entidad=usuario&accion=misCitas" class="<?= $accion === 'misCitas' ? 'active' : '' ?>"><i class="fas fa-calendar"></i> Mis Citas</a></li>
+                            <li><a href="index.php?entidad=video&accion=verPublico" class="<?= $entidad === 'video' ? 'active' : '' ?>"><i class="fas fa-video"></i> Videos</a></li>
+                            <li><a href="index.php?entidad=ubicacion&accion=ver" class="<?= $entidad === 'ubicacion' ? 'active' : '' ?>"><i class="fas fa-map-marker-alt"></i> Ubicaci�n</a></li>
+                        <?php endif; ?>
 
-                <?php if (Usuario::esAdministrador()): ?>
-                    <!-- Menú para ADMINISTRADORES -->
-                    <a href="index.php?entidad=admin&accion=dashboard">Dashboard Admin</a>
-                    <a href="index.php?entidad=dueno&accion=listar">Dueños</a>
-                    <a href="index.php?entidad=mascota&accion=listar">Mascotas</a>
-                    <a href="index.php?entidad=cita&accion=listar">Citas</a>
-                    <a href="index.php?entidad=veterinario&accion=listar">Veterinarios</a>
-                    <a href="index.php?entidad=reporte&accion=ver">Reportes</a>
-                    <a href="index.php?entidad=video&accion=listar">Videos</a>
-                    <a href="index.php?entidad=reclamacion&accion=listar">Reclamaciones</a>
-                    <a href="index.php?entidad=sugerencia&accion=listar">Sugerencias</a>
-                <?php else: ?>
-                    <!-- Menú para USUARIOS NORMALES -->
-                    <a href="index.php?entidad=usuario&accion=dashboard">Mi cuenta</a>
-                    <a href="index.php?entidad=video&accion=verPublico">Videos</a>
-                    <a href="index.php?entidad=reclamacion&accion=mostrarFormulario">📝 Libro Reclamaciones</a>
-                    <a href="index.php?entidad=sugerencia&accion=mostrarFormulario">💡 Sugerencias</a>
-                    <a href="index.php?entidad=ubicacion&accion=ver">📍 Ubicación</a>
-                <?php endif; ?>
-
-                <a href="index.php?entidad=auth&accion=logout">Cerrar sesión</a>
-
-            <?php else: ?>
-
-                <a href="index.php?entidad=auth&accion=mostrarLogin">Iniciar sesión</a>
-
-            <?php endif; ?>
-
-
-        </nav>
+                        <li>
+                            <div class="user-menu">
+                                <a href="index.php?entidad=usuario&accion=perfil" class="user-info" style="text-decoration: none;">
+                                    <div class="user-avatar">
+                                        <?= Helper::e(strtoupper(substr((string) ($usuarioActual['nombre'] ?? 'U'), 0, 1))) ?>
+                                    </div>
+                                    <span><?= Helper::e((string) ($usuarioActual['nombre'] ?? '')) ?></span>
+                                </a>
+                                <a href="index.php?entidad=auth&accion=logout" class="btn-logout" title="Cerrar Sesi�n">
+                                    <i class="fas fa-sign-out-alt"></i> Salir
+                                </a>
+                            </div>
+                        </li>
+                    <?php else: ?>
+                        <li><a href="index.php?entidad=home&accion=ver"><i class="fas fa-home"></i> Inicio</a></li>
+                        <li><a href="index.php?entidad=video&accion=verPublico"><i class="fas fa-video"></i> Videos</a></li>
+                        <li><a href="index.php?entidad=ubicacion&accion=ver"><i class="fas fa-map-marker-alt"></i> Ubicaci�n</a></li>
+                        <li><a href="index.php?entidad=auth&accion=mostrarLogin"><i class="fas fa-sign-in-alt"></i> Iniciar Sesi�n</a></li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-<main class="container">
-<?php
-// ============================================
-// ENRUTAMIENTO PARA PÁGINAS DE VISUALIZACIÓN
-// ============================================
+    <?php if ($msgExito = Session::getFlash('exito') ?? Session::getFlash('success')): ?>
+        <div class="flash-banner flash-success"><?= Helper::e($msgExito) ?></div>
+    <?php endif; ?>
+    <?php if ($msgError = Session::getFlash('error')): ?>
+        <div class="flash-banner flash-error"><?= Helper::e($msgError) ?></div>
+    <?php endif; ?>
 
-$entidadCapitalizada = ucfirst(strtolower($entidad));
-$archivo = "Controlador/Controlador{$entidadCapitalizada}.php";
+    <main>
+        <?php Router::dispatch(__DIR__, $entidad, $accion); ?>
+    </main>
 
-if (file_exists($archivo)) {
-    require_once $archivo;
-    $clase = "Controlador{$entidadCapitalizada}";
-
-    if (class_exists($clase)) {
-        $controlador = new $clase();
-
-        if (method_exists($controlador, $accion)) {
-            $controlador->$accion();
-        } else {
-            echo "<div class='alert alert-warning'>Acción <strong>$accion</strong> no encontrada.</div>";
-        }
-    } else {
-        echo "<div class='alert alert-danger'>Clase $clase no encontrada.</div>";
-    }
-} else {
-    echo "<div class='alert alert-danger'>Controlador $archivo no existe.</div>";
-}
-?>
-</main>
-
-<footer>
-    <p>© <?= date('Y') ?> Veterinaria Ralah Pets</p>
-</footer>
-
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="index.php?entidad=home&accion=ver">Inicio</a>
+                <a href="index.php?entidad=ubicacion&accion=ver">Ubicaci�n</a>
+                <a href="index.php?entidad=video&accion=verPublico">Videos</a>
+                <a href="index.php?entidad=reclamacion&accion=crear">Libro de Reclamaciones</a>
+                <a href="index.php?entidad=sugerencia&accion=crear">Sugerencias</a>
+            </div>
+            <p>&copy; <?= date('Y') ?> Veterinaria Ralah Pets - Todos los derechos reservados</p>
+            <p style="font-size: 0.875rem; opacity: 0.8;">Cuidando a tus mascotas con amor y profesionalismo</p>
+        </div>
+    </footer>
 </body>
 </html>

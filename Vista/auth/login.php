@@ -123,9 +123,7 @@
             </div>
             
             <?php
-            if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+            \App\Support\Session::start();
 
             if (isset($_SESSION['error'])): ?>
                 <div class="alert alert-danger">
@@ -142,6 +140,7 @@
             <?php endif; ?>
             
             <form action="index.php?entidad=auth&accion=procesarLogin" method="POST">
+                <?= \App\Support\Csrf::field() ?>
                 <div class="form-group">
                     <label for="email" class="form-label">Correo Electrónico</label>
                     <input 
