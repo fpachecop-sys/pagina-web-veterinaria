@@ -1,38 +1,28 @@
 <?php
-require_once 'Servicios/conexion.php';
+declare(strict_types=1);
 
-class Sugerencia {
-    public static function obtenerTodos() {
-        $conn = conexion::conectar();
-        $sql = "SELECT * FROM sugerencias ORDER BY fecha_registro DESC";
-        $resultado = $conn->query($sql);
-        $sugerencias = [];
-        while ($fila = $resultado->fetch_assoc()) {
-            $sugerencias[] = $fila;
-        }
-        $conn->close();
-        return $sugerencias;
+require_once __DIR__ . '/../Servicios/conexion.php';
+use App\Repositories\InteraccionRepository;
+use App\Support\Database;
+
+class Sugerencia
+{
+    public static function listarTodas(): array
+    {
+        return (new InteraccionRepository(Database::getConnection()))->listSugerencias();
     }
 
-    public static function agregar($nombre, $email, $telefono, $categoria, $sugerencia) {
-        $conn = conexion::conectar();
-        $stmt = $conn->prepare("INSERT INTO sugerencias (nombre, email, telefono, categoria, sugerencia) 
-                                VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $nombre, $email, $telefono, $categoria, $sugerencia);
-        $resultado = $stmt->execute();
-        $stmt->close();
-        $conn->close();
-        return $resultado;
+    public static function guardar(string $nombre, string $email, string$mensaje): bool
+    {
+        return (new InteraccionRepository(Database::getConnection()))->createSugerencia([
+            'nombre_cliente' => $nombre,
+            'email_cliente'  => $email,
+            'mensaje'        => $mensaje,
+        ]);
     }
 
-    public static function eliminar($id) {
-        $conn = conexion::conectar();
-        $stmt = $conn->prepare("DELETE FROM sugerencias WHERE id=?");
-        $stmt->bind_param("i", $id);
-        $resultado = $stmt->execute();
-        $stmt->close();
-        $conn->close();
-        return $resultado;
+    public static function eliminar(int|string $id): bool
+    {
+        return (new InteraccionRepository(Database::getConnection()))->deleteSugerencia((int) $id);
     }
 }
-?>

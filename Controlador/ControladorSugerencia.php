@@ -1,55 +1,90 @@
 <?php
-require_once 'Modelo/Sugerencia.php';
-require_once 'Modelo/Usuario.php';
+declare(strict_types=1);
 
-class ControladorSugerencia {
-    
-    // ADMIN: Listar sugerencias
-    public function listar() {
+require_once __DIR__ . '/../Modelo/Sugerencia.php';
+require_once __DIR__ . '/../Modelo/Usuario.php';
+
+use App\Support\Csrf;
+use App\Support\Logger;
+use App\Support\Session;
+use App\Validators\InteraccionValidator;
+
+class ControladorSugerencia
+{
+    public function crear(): void
+    {
+        include __DIR__ . '/../Vista/sugerencias/formulario.php';
+    }
+
+    public function guardar(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?entidad=sugerencia&accion=crear');
+            exit();
+        }
+
+        Session::start();
+        if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
+            Session::setFlash('error', 'Token de seguridad inválido.');
+            header('Location: index.php?entidad=sugerencia&accion=crear');
+            exit();
+        }
+
+        $error = InteraccionValidator::validateSugerencia($_POST);
+        if ($error !== null) {
+            Session::setFlash('error', $error);
+            header('Location: index.php?entidad=sugerencia&accion=crear');
+            exit();
+        }
+
+        try {
+            Sugerencia::guardar(
+                trim((string) $_POST['nombre_cliente']),
+                trim((string) ($_POST['email_cliente'] ?? '')),
+                trim((string) $_POST['mensaje'])
+            );
+            Session::setFlash('exito', '¡Muchas gracias por su sugerencia! La tomaremos en cuenta para mejorar.');
+        } catch (\Throwable $e) {
+            Logger::error('Error guardando sugerencia', $e);
+            Session::setFlash('error', 'No se pudo enviar la sugerencia.');
+        }
+
+        header('Location: index.php?entidad=sugerencia&accion=crear');
+        exit();
+    }
+
+    public function listar(): void
+    {
         if (!Usuario::esAdministrador()) {
-            $_SESSION['error'] = 'No tienes permisos para esta sección.';
-            header("Location: index.php?entidad=usuario&accion=dashboard");
-            exit;
+            header('Location: index.php?entidad=home&accion=ver');
+            exit();
         }
-        
-        $datos = Sugerencia::obtenerTodos();
-        require("Vista/sugerencias/listar.php");
+        $sugerencias = Sugerencia::listarTodas();
+        include __DIR__ . '/../Vista/sugerencias/listar.php';
     }
-    
-    // PÚBLICO: Mostrar formulario
-    public function mostrarFormulario() {
-        // Cualquiera puede acceder
-        require("Vista/sugerencias/formulario.php");
-    }
-    
-    // PÚBLICO: Guardar sugerencia
-    public function guardar() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nombre = $_POST['nombre'];
-            $email = $_POST['email'];
-            $telefono = $_POST['telefono'] ?? '';
-            $categoria = $_POST['categoria'];
-            $sugerencia = $_POST['sugerencia'];
-            
-            Sugerencia::agregar($nombre, $email, $telefono, $categoria, $sugerencia);
-            
-            echo "<script>alert('¡Gracias por tu sugerencia! La hemos recibido correctamente.');
-                  window.location='index.php?entidad=sugerencia&accion=mostrarFormulario';</script>";
+
+    public function eliminar(): void
+    {
+        if (!Usuario::esAdministrador() || $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: index.php?entidad=sugerencia&accion=listar');
+            exit();
         }
-    }
-    
-    // ADMIN: Eliminar
-    public function eliminar() {
-        if (!Usuario::esAdministrador()) {
-            $_SESSION['error'] = 'No tienes permisos para esta sección.';
-            header("Location: index.php?entidad=usuario&accion=dashboard");
-            exit;
+
+        Session::start();
+        if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
+            Session::setFlash('error', 'Token de seguridad inválido.');
+            header('Location: index.php?entidad=sugerencia&accion=listar');
+            exit();
         }
-        
-        $id = $_GET['id'];
-        Sugerencia::eliminar($id);
-        header("Location: index.php?entidad=sugerencia&accion=listar");
-        exit;
+
+        $id = (int) ($_POST['id'] ?? 0);
+        if (Sugerencia::eliminar($id)) {
+            Session::setFlash('exito', 'Sugerencia eliminada.');
+        } else {
+            Session::setFlash('error', 'No se pudo eliminar la sugerencia.');
+        }
+
+        header('Location: index.php?entidad=sugerencia&accion=listar');
+        exit();
     }
 }
-?>

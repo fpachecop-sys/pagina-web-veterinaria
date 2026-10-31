@@ -1,60 +1,34 @@
 <?php
-require_once 'Servicios/conexion.php';
+declare(strict_types=1);
 
-class Video {
-    public static function obtenerTodos() {
-        $conn = conexion::conectar();
-        $sql = "SELECT * FROM videos ORDER BY fecha_registro DESC";
-        $resultado = $conn->query($sql);
-        $videos = [];
-        while ($fila = $resultado->fetch_assoc()) {
-            $videos[] = $fila;
-        }
-        $conn->close();
-        return $videos;
+require_once __DIR__ . '/../Servicios/conexion.php';
+use App\Repositories\InteraccionRepository;
+use App\Support\Database;
+
+class Video
+{
+    public static function listarTodos(): array
+    {
+        return (new InteraccionRepository(Database::getConnection()))->listVideos();
     }
 
-    public static function obtenerPorId($id) {
-        $conn = conexion::conectar();
-        $stmt = $conn->prepare("SELECT * FROM videos WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $resultado = $stmt->get_result()->fetch_assoc();
-        $stmt->close();
-        $conn->close();
-        return $resultado;
+    public static function obtenerPorId(int|string $id): ?array
+    {
+        return (new InteraccionRepository(Database::getConnection()))->findVideoById((int) $id);
     }
 
-    public static function agregar($titulo, $descripcion, $url_video, $categoria) {
-        $conn = conexion::conectar();
-        $stmt = $conn->prepare("INSERT INTO videos (titulo, descripcion, url_video, categoria) 
-                                VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $titulo, $descripcion, $url_video, $categoria);
-        $resultado = $stmt->execute();
-        $stmt->close();
-        $conn->close();
-        return $resultado;
+    public static function guardar(string $titulo, string $descripcion, string$url): bool
+    {
+        return (new InteraccionRepository(Database::getConnection()))->createVideo($titulo, $descripcion,$url);
     }
 
-    public static function actualizar($id, $titulo, $descripcion, $url_video, $categoria, $activo) {
-        $conn = conexion::conectar();
-        $stmt = $conn->prepare("UPDATE videos SET titulo=?, descripcion=?, url_video=?, 
-                                categoria=?, activo=? WHERE id=?");
-        $stmt->bind_param("ssssii", $titulo, $descripcion, $url_video, $categoria, $activo, $id);
-        $resultado = $stmt->execute();
-        $stmt->close();
-        $conn->close();
-        return $resultado;
+    public static function actualizar(int|string $id, string$titulo, string $descripcion, string$url): bool
+    {
+        return (new InteraccionRepository(Database::getConnection()))->updateVideo((int) $id,$titulo, $descripcion,$url);
     }
 
-    public static function eliminar($id) {
-        $conn = conexion::conectar();
-        $stmt = $conn->prepare("DELETE FROM videos WHERE id=?");
-        $stmt->bind_param("i", $id);
-        $resultado = $stmt->execute();
-        $stmt->close();
-        $conn->close();
-        return $resultado;
+    public static function eliminar(int|string $id): bool
+    {
+        return (new InteraccionRepository(Database::getConnection()))->deleteVideo((int) $id);
     }
 }
-?>

@@ -56,9 +56,13 @@ foreach ($files as $filePath) {
     echo "Ejecutando: $version... ";
     $rawSql = file_get_contents($filePath);
     
-    // Limpiar comentarios de l�nea antes de separar por punto y coma
+    // Limpiar BOM si existiera
+    $rawSql = preg_replace('/^\xEF\xBB\xBF/', '', $rawSql);
     $lines = explode("\n", $rawSql);
-    $cleanLines = array_filter($lines, fn($line) => !str_starts_with(trim($line), '--'));
+    $cleanLines = array_filter($lines, function ($line) {
+        $t = trim($line);
+        return $t !== '' && !str_starts_with($t, '--');
+    });
     $cleanSql = implode("\n", $cleanLines);
 
     $queries = array_filter(
@@ -70,7 +74,15 @@ foreach ($files as $filePath) {
 
     try {
         foreach ($queries as $query) {
-            $mysqli->query($query);
+            try {
+                $mysqli->query($query);
+            } catch (\mysqli_sql_exception $sqle) {
+                // Códigos 1060 (columna duplicada) o 1061 (clave/índice duplicado)
+                if ($sqle->getCode() === 1060 || $sqle->getCode() === 1061) {
+                    continue;
+                }
+                throw $sqle;
+            }
         }
 
         $stmt = $mysqli->prepare("INSERT INTO `schema_migrations` (`version`) VALUES (?)");

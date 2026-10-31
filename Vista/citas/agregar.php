@@ -87,6 +87,7 @@
 <div class="card">
   <h2>📅 Agendar Nueva Cita</h2>
   <form action="index.php?entidad=cita&accion=guardarNuevo" method="POST">
+            <?= \App\Support\Csrf::field() ?>
     <div class="row">
       <div class="col-md-6 mb-3">
         <label for="fecha" class="form-label">Fecha</label>

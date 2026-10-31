@@ -90,6 +90,7 @@
         </div>
 
         <form action="index.php?entidad=reclamacion&accion=guardar" method="POST">
+            <?= \App\Support\Csrf::field() ?>
             <div class="section-title">📋 Datos del Consumidor</div>
             
             <div class="row">

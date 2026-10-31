@@ -10,6 +10,7 @@
 <h2>✏️ Editar Video</h2>
 
 <form action="index.php?entidad=video&accion=actualizar" method="POST">
+            <?= \App\Support\Csrf::field() ?>
 
     <input type="hidden" name="id" value="<?= $video['id'] ?>">
 

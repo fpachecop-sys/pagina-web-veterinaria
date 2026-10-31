@@ -83,6 +83,7 @@
 <div class="card">
   <h2>✏️ Editar Cita</h2>
   <form action="index.php?entidad=cita&accion=actualizar" method="POST">
+            <?= \App\Support\Csrf::field() ?>
     <input type="hidden" name="id" value="<?= htmlspecialchars($cita['id']) ?>">
 
     <div class="row">

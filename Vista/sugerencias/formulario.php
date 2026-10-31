@@ -70,6 +70,7 @@
 
     <div class="form-card">
         <form action="index.php?entidad=sugerencia&accion=guardar" method="POST">
+            <?= \App\Support\Csrf::field() ?>
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="nombre">Nombre Completo *</label>

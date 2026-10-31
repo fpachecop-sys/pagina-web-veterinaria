@@ -1,104 +1,59 @@
 <?php
-require_once 'Servicios/conexion.php';
+declare(strict_types=1);
 
-class Reporte {
-    
-    public static function obtenerEstadisticas() {
-        $conn = conexion::conectar();
-        
-        $stats = [];
-        
-        // Total de mascotas
-        $sql = "SELECT COUNT(*) as total FROM mascotas";
-        $resultado = $conn->query($sql);
-        $stats['total_mascotas'] = $resultado->fetch_assoc()['total'];
-        
-        // Total de dueños
-        $sql = "SELECT COUNT(*) as total FROM duenos";
-        $resultado = $conn->query($sql);
-        $stats['total_duenos'] = $resultado->fetch_assoc()['total'];
-        
-        // Total de veterinarios
-        $sql = "SELECT COUNT(*) as total FROM veterinarios";
-        $resultado = $conn->query($sql);
-        $stats['total_veterinarios'] = $resultado->fetch_assoc()['total'];
-        
-        // Total de citas
-        $sql = "SELECT COUNT(*) as total FROM citas";
-        $resultado = $conn->query($sql);
-        $stats['total_citas'] = $resultado->fetch_assoc()['total'];
-        
-        // Citas pendientes
-        $sql = "SELECT COUNT(*) as total FROM citas WHERE estado = 'Pendiente'";
-        $resultado = $conn->query($sql);
-        $stats['citas_pendientes'] = $resultado->fetch_assoc()['total'];
-        
-        // Citas atendidas
-        $sql = "SELECT COUNT(*) as total FROM citas WHERE estado = 'Atendida'";
-        $resultado = $conn->query($sql);
-        $stats['citas_atendidas'] = $resultado->fetch_assoc()['total'];
-        
-        // Citas canceladas
-        $sql = "SELECT COUNT(*) as total FROM citas WHERE estado = 'Cancelada'";
-        $resultado = $conn->query($sql);
-        $stats['citas_canceladas'] = $resultado->fetch_assoc()['total'];
-        
-        $conn->close();
+require_once __DIR__ . '/../Servicios/conexion.php';
+use App\Support\Database;
+
+class Reporte
+{
+    public static function obtenerEstadisticas(): array
+    {
+        $conn = Database::getConnection();$stats = [];
+
+        $r =$conn->query("SELECT COUNT(*) AS total FROM usuarios WHERE rol = 'usuario' AND activo = 1");
+        $stats['total_usuarios'] = (int) ($r->fetch_assoc()['total'] ?? 0);
+
+        $r =$conn->query("SELECT COUNT(*) AS total FROM mascotas WHERE activo = 1");
+        $stats['total_mascotas'] = (int) ($r->fetch_assoc()['total'] ?? 0);
+
+        $r =$conn->query("SELECT COUNT(*) AS total FROM citas");
+        $stats['total_citas'] = (int) ($r->fetch_assoc()['total'] ?? 0);
+
+        $r =$conn->query("SELECT COUNT(*) AS total FROM veterinarios WHERE activo = 1");
+        $stats['total_veterinarios'] = (int) ($r->fetch_assoc()['total'] ?? 0);
+
         return $stats;
     }
-    
-    public static function obtenerMascotasPorEspecie() {
-        $conn = conexion::conectar();
-        $sql = "SELECT especie, COUNT(*) as cantidad 
-                FROM mascotas 
-                GROUP BY especie 
-                ORDER BY cantidad DESC";
-        $resultado = $conn->query($sql);
-        
-        $datos = [];
-        while ($fila = $resultado->fetch_assoc()) {
-            $datos[] = $fila;
+
+    public static function obtenerCitasPorEstado(): array
+    {
+        $conn = Database::getConnection();
+        $res =$conn->query("SELECT estado, COUNT(*) as cantidad FROM citas GROUP BY estado");
+        $citas = [];
+        while ($fila = $res->fetch_assoc()) {$citas[$fila['estado']] = (int)$fila['cantidad'];
         }
-        
-        $conn->close();
-        return $datos;
+        return $citas;
     }
-    
-    public static function obtenerVeterinariosPopulares() {
-        $conn = conexion::conectar();
-        $sql = "SELECT v.nombre, v.especialidad, COUNT(c.id) as total_citas 
-                FROM veterinarios v 
-                LEFT JOIN citas c ON v.id = c.id_veterinario 
-                GROUP BY v.id, v.nombre, v.especialidad 
-                ORDER BY total_citas DESC 
-                LIMIT 5";
-        $resultado = $conn->query($sql);
-        
-        $datos = [];
-        while ($fila = $resultado->fetch_assoc()) {
-            $datos[] = $fila;
+
+    public static function obtenerMascotasPorEspecie(): array
+    {
+        $conn = Database::getConnection();
+        $res =$conn->query("SELECT especie, COUNT(*) as cantidad FROM mascotas WHERE activo = 1 GROUP BY especie");
+        $mascotas = [];
+        while ($fila =$res->fetch_assoc()) {
+            $mascotas[] =$fila;
         }
-        
-        $conn->close();
-        return $datos;
+        return $mascotas;
     }
-    
-    public static function obtenerCitasPorMes() {
-        $conn = conexion::conectar();
-        $sql = "SELECT DATE_FORMAT(fecha, '%Y-%m') as mes, COUNT(*) as cantidad 
-                FROM citas 
-                GROUP BY mes 
-                ORDER BY mes DESC 
-                LIMIT 12";
-        $resultado = $conn->query($sql);
-        
-        $datos = [];
-        while ($fila = $resultado->fetch_assoc()) {
-            $datos[] = $fila;
+
+    public static function obtenerCitasPorMes(): array
+    {
+        $conn = Database::getConnection();
+        $res =$conn->query("SELECT DATE_FORMAT(fecha, '%Y-%m') as mes, COUNT(*) as cantidad FROM citas GROUP BY mes ORDER BY mes DESC LIMIT 6");
+        $citas = [];
+        while ($fila =$res->fetch_assoc()) {
+            $citas[] =$fila;
         }
-        
-        $conn->close();
-        return $datos;
+        return array_reverse($citas);
     }
 }
-?>
