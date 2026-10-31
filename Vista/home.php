@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veterinaria Ralah Pets - Cuidamos a tu mejor amigo</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <style>
+<style>
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -133,25 +126,10 @@
             font-size: 0.9em;
         }
     </style>
-</head>
-<body>
+
+
     <!-- Header -->
-    <header class="main-header">
-        <div class="header-container">
-            <a href="index.php" class="logo">
-                <span style="font-size: 2em;">🐾</span>
-                <h1>Ralah Pets</h1>
-            </a>
-            <nav class="main-nav">
-                <a href="#quienes-somos" class="nav-link">¿Quiénes Somos?</a>
-                <a href="index.php?entidad=veterinario&accion=verPublico" class="nav-link">Veterinarios</a>
-                <a href="index.php?entidad=ubicacion&accion=ver" class="nav-link">Ubicación</a>
-                <a href="index.php?entidad=video&accion=verPublico" class="nav-link">Videos</a>
-                <a href="index.php?entidad=auth&accion=mostrarLogin" class="btn-login">Iniciar Sesión</a>
-                <a href="index.php?entidad=auth&accion=mostrarRegistro" class="btn-register">Registrarse</a>
-            </nav>
-        </div>
-    </header>
+    
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -286,17 +264,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-content">
-            <p><strong>© <?= date('Y') ?> Veterinaria Ralah Pets</strong></p>
-            <p>Los Olivos Huandoy, San Martin de Porres - Lima, Perú</p>
-            <p>📞 943 626 841 | 📧 info@veterinariaralah.com</p>
-            <p style="margin-top: 15px;">
-                <a href="index.php?entidad=reclamacion&accion=mostrarFormulario" style="color: var(--primary); text-decoration: none;">📝 Libro de Reclamaciones</a> | 
-                <a href="index.php?entidad=sugerencia&accion=mostrarFormulario" style="color: var(--primary); text-decoration: none;">💡 Buzón de Sugerencias</a>
-            </p>
-        </div>
-    </footer>
+    
 
     <script>
         // Smooth scroll para los enlaces internos
@@ -313,5 +281,3 @@
             });
         });
     </script>
-</body>
-</html>

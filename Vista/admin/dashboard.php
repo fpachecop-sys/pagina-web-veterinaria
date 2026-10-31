@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrador - Veterinaria Ralah Pets</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <style>
+<style>
     .admin-stats {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -81,22 +74,10 @@
         margin-top: 30px;
     }
 </style>
-</head>
-<body>
+
+
     <!-- Header -->
-    <header class="main-header">
-        <div class="header-container">
-            <a href="index.php?entidad=admin&accion=dashboard" class="logo">
-                <span style="font-size: 2em;">🐾</span>
-                <h1>Ralah Pets - Admin</h1>
-            </a>
-            <nav class="main-nav">
-                <a href="index.php?entidad=admin&accion=dashboard" class="nav-link active">Dashboard</a>
-                <a href="index.php?entidad=admin&accion=listarUsuarios" class="nav-link">Usuarios</a>
-                <a href="index.php?entidad=auth&accion=logout" class="btn-login">Cerrar Sesión</a>
-            </nav>
-        </div>
-    </header>
+    
     <!-- Main Container -->
 <div class="main-container">
     <h2 style="color: var(--primary); margin-bottom: 10px;">🎯 Panel de Administración</h2>
@@ -188,10 +169,3 @@
 </div>
 
 <!-- Footer -->
-<footer class="main-footer">
-    <div class="footer-content">
-        <p><strong>© <?= date('Y') ?> Veterinaria Ralah Pets - Panel de Administración</strong></p>
-    </div>
-</footer>
-</body>
-</html>

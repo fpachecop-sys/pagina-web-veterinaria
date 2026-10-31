@@ -188,16 +188,26 @@
           </td>
           <td>
             <?php if ($fila['estado'] == 'Pendiente'): ?>
-              <a href="index.php?entidad=cita&accion=cambiarEstado&id=<?= $fila['id'] ?>&estado=Atendida" 
-                 class="btn btn-sm btn-success" title="Marcar como Atendida">✓</a>
-              <a href="index.php?entidad=cita&accion=cambiarEstado&id=<?= $fila['id'] ?>&estado=Cancelada" 
-                 class="btn btn-sm btn-secondary" title="Cancelar">✕</a>
+              <form action="index.php?entidad=cita&accion=cambiarEstado" method="POST" style="display:inline">
+                <?= \App\Support\Csrf::field() ?>
+                <input type="hidden" name="id" value="<?= (int) $fila['id'] ?>">
+                <input type="hidden" name="estado" value="Atendida">
+                <button type="submit" class="btn btn-sm btn-success" title="Marcar como Atendida">✓</button>
+              </form>
+              <form action="index.php?entidad=cita&accion=cambiarEstado" method="POST" style="display:inline">
+                <?= \App\Support\Csrf::field() ?>
+                <input type="hidden" name="id" value="<?= (int) $fila['id'] ?>">
+                <input type="hidden" name="estado" value="Cancelada">
+                <button type="submit" class="btn btn-sm btn-secondary" title="Cancelar cita">✕</button>
+              </form>
             <?php endif; ?>
             <a href="index.php?entidad=cita&accion=mostrarFormularioEditar&id=<?= $fila['id'] ?>" 
                class="btn btn-sm btn-warning">Editar</a>
-            <a href="index.php?entidad=cita&accion=eliminar&id=<?= $fila['id'] ?>" 
-               class="btn btn-sm btn-danger" 
-               onclick="return confirm('¿Eliminar esta cita?')">Eliminar</a>
+            <form action="index.php?entidad=cita&accion=eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Eliminar esta cita?')">
+              <?= \App\Support\Csrf::field() ?>
+              <input type="hidden" name="id" value="<?= (int) $fila['id'] ?>">
+              <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+            </form>
           </td>
         </tr>
         <?php endforeach; ?>

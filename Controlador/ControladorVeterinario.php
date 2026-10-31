@@ -25,6 +25,7 @@ class ControladorVeterinario
     public function verPublico(): void
     {
         $veterinarios = Veterinario::listarTodos();
+        $datos = $veterinarios;
         include __DIR__ . '/../Vista/veterinarios/ver_publico.php';
     }
 
@@ -32,6 +33,7 @@ class ControladorVeterinario
     {
         $this->verificarAdmin();
         $veterinarios = Veterinario::listarTodos();
+        $datos = $veterinarios;
         include __DIR__ . '/../Vista/veterinarios/listar.php';
     }
 
@@ -39,6 +41,11 @@ class ControladorVeterinario
     {
         $this->verificarAdmin();
         include __DIR__ . '/../Vista/veterinarios/agregar.php';
+    }
+
+    public function mostrarFormularioAgregar(): void
+    {
+        $this->agregar();
     }
 
     public function guardarNuevo(): void
@@ -79,6 +86,7 @@ class ControladorVeterinario
                 trim((string) $_POST['telefono'])
             );
             Session::setFlash('exito', 'Veterinario registrado exitosamente.');
+            Session::setFlash('success', 'Veterinario registrado exitosamente.');
         } catch (\Throwable $e) {
             Logger::error('Error guardando veterinario', $e);
             Session::setFlash('error', 'No se pudo registrar el veterinario.');
@@ -98,7 +106,13 @@ class ControladorVeterinario
             header('Location: index.php?entidad=veterinario&accion=listar');
             exit();
         }
+        $v = $veterinario;
         include __DIR__ . '/../Vista/veterinarios/editar.php';
+    }
+
+    public function mostrarFormularioEditar(): void
+    {
+        $this->editar();
     }
 
     public function actualizar(): void
@@ -141,6 +155,7 @@ class ControladorVeterinario
                 trim((string) $_POST['telefono'])
             );
             Session::setFlash('exito', 'Datos del veterinario actualizados correctamente.');
+            Session::setFlash('success', 'Datos del veterinario actualizados correctamente.');
         } catch (\Throwable $e) {
             Logger::error('Error actualizando veterinario', $e);
             Session::setFlash('error', 'No se pudo actualizar el veterinario.');
@@ -167,9 +182,15 @@ class ControladorVeterinario
         }
 
         $id = (int) ($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            Session::setFlash('error', 'El identificador del veterinario no es válido.');
+            header('Location: index.php?entidad=veterinario&accion=listar');
+            exit();
+        }
         try {
             Veterinario::eliminar($id);
             Session::setFlash('exito', 'Veterinario desactivado conservando su historial de citas.');
+            Session::setFlash('success', 'Veterinario desactivado conservando su historial de citas.');
         } catch (\Throwable $e) {
             Logger::error('Error desactivando veterinario', $e);
             Session::setFlash('error', 'No se pudo desactivar el veterinario.');

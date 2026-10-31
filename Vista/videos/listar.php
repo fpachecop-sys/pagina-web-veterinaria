@@ -135,9 +135,11 @@
                             <div class="video-actions">
                                 <a href="index.php?entidad=video&accion=mostrarFormularioEditar&id=<?= $video['id'] ?>" 
                                    class="btn btn-sm btn-warning">Editar</a>
-                                <a href="index.php?entidad=video&accion=eliminar&id=<?= $video['id'] ?>" 
-                                   class="btn btn-sm btn-danger"
-                                   onclick="return confirm('¿Eliminar este video?')">Eliminar</a>
+                                <form action="index.php?entidad=video&accion=eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Eliminar este video?')">
+                                    <?= \App\Support\Csrf::field() ?>
+                                    <input type="hidden" name="id" value="<?= (int) $video['id'] ?>">
+                                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                                </form>
                             </div>
                         </div>
                     </div>

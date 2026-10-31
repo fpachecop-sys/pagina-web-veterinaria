@@ -99,13 +99,25 @@
                             </td>
                             <td>
                                 <?php if ($fila['estado'] == 'Pendiente'): ?>
-                                    <a href="index.php?entidad=reclamacion&accion=cambiarEstado&id=<?= $fila['id'] ?>&estado=En Proceso" 
-                                       class="btn btn-sm btn-primary" title="Marcar en proceso">⏳</a>
-                                    <a href="index.php?entidad=reclamacion&accion=cambiarEstado&id=<?= $fila['id'] ?>&estado=Resuelta" 
-                                       class="btn btn-sm btn-success" title="Marcar como resuelta">✓</a>
+                                    <form action="index.php?entidad=reclamacion&accion=cambiarEstado" method="POST" style="display:inline">
+                                        <?= \App\Support\Csrf::field() ?>
+                                        <input type="hidden" name="id" value="<?= (int) $fila['id'] ?>">
+                                        <input type="hidden" name="estado" value="En Proceso">
+                                        <button type="submit" class="btn btn-sm btn-primary" title="Marcar en proceso">⏳</button>
+                                    </form>
+                                    <form action="index.php?entidad=reclamacion&accion=cambiarEstado" method="POST" style="display:inline">
+                                        <?= \App\Support\Csrf::field() ?>
+                                        <input type="hidden" name="id" value="<?= (int) $fila['id'] ?>">
+                                        <input type="hidden" name="estado" value="Resuelta">
+                                        <button type="submit" class="btn btn-sm btn-success" title="Marcar como resuelta">✓</button>
+                                    </form>
                                 <?php elseif ($fila['estado'] == 'En Proceso'): ?>
-                                    <a href="index.php?entidad=reclamacion&accion=cambiarEstado&id=<?= $fila['id'] ?>&estado=Resuelta" 
-                                       class="btn btn-sm btn-success" title="Marcar como resuelta">✓</a>
+                                    <form action="index.php?entidad=reclamacion&accion=cambiarEstado" method="POST" style="display:inline">
+                                        <?= \App\Support\Csrf::field() ?>
+                                        <input type="hidden" name="id" value="<?= (int) $fila['id'] ?>">
+                                        <input type="hidden" name="estado" value="Resuelta">
+                                        <button type="submit" class="btn btn-sm btn-success" title="Marcar como resuelta">✓</button>
+                                    </form>
                                 <?php endif; ?>
                             </td>
                         </tr>

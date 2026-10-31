@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Panel - Veterinaria Ralah Pets</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <style>
+<style>
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -100,31 +93,10 @@
             margin-bottom: 15px;
         }
     </style>
-</head>
-<body>
+
+
     <!-- Header -->
-   <header class="main-header">
-    <div class="header-container">
-        <a href="index.php?entidad=usuario&accion=dashboard" class="logo">
-            <span style="font-size: 2em;">🐾</span>
-            <h1>Ralah Pets</h1>
-        </a>
-        <nav class="main-nav">
-            <a href="index.php?entidad=usuario&accion=dashboard" class="nav-link">Mi Panel</a>
-            <a href="index.php?entidad=usuario&accion=verPerfil" class="nav-link">Mi Perfil</a>
-            <a href="index.php?entidad=usuario&accion=misMascotas" class="nav-link">Mis Mascotas</a>
-            <a href="index.php?entidad=usuario&accion=misCitas" class="nav-link">Mis Citas</a>
-            
-            <!-- NUEVOS ENLACES -->
-            <a href="index.php?entidad=video&accion=verPublico" class="nav-link">Videos</a>
-            <a href="index.php?entidad=reclamacion&accion=mostrarFormulario" class="nav-link">Reclamaciones</a>
-            <a href="index.php?entidad=sugerencia&accion=mostrarFormulario" class="nav-link">Sugerencias</a>
-            <a href="index.php?entidad=ubicacion&accion=ver" class="nav-link">Ubicación</a>
-            
-            <a href="index.php?entidad=auth&accion=logout" class="btn-login">Cerrar Sesión</a>
-        </nav>
-    </div>
-</header>
+   
 
     <!-- Main Container -->
     <div class="main-container">
@@ -137,22 +109,7 @@
                 Este es tu panel de usuario. Desde aquí puedes gestionar tus mascotas, citas y más.
             </p>
         </div>
-
-        <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert alert-success">
-                <?= htmlspecialchars($_SESSION['success']) ?>
-            </div>
-            <?php unset($_SESSION['success']); ?>
-        <?php endif; ?>
-
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger">
-                <?= htmlspecialchars($_SESSION['error']) ?>
-            </div>
-            <?php unset($_SESSION['error']); ?>
-        <?php endif; ?>
-
-        <!-- Estadísticas -->
+<!-- Estadísticas -->
         <div class="dashboard-grid">
             <div class="dashboard-card">
                 <div class="dashboard-card-icon">🐾</div>
@@ -233,12 +190,3 @@
     </div>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-content">
-            <p><strong>© <?= date('Y') ?> Veterinaria Ralah Pets</strong></p>
-            <p>Los Olivos Huandoy, San Martin de Porres - Lima, Perú</p>
-            <p>📞 943 626 841 | 📧 info@veterinariaralah.com</p>
-        </div>
-    </footer>
-</body>
-</html>

@@ -143,9 +143,11 @@
           <td>
             <a href="index.php?entidad=veterinario&accion=mostrarFormularioEditar&id=<?= $fila['id'] ?>" 
                class="btn btn-sm btn-warning">Editar</a>
-            <a href="index.php?entidad=veterinario&accion=eliminar&id=<?= $fila['id'] ?>" 
-               class="btn btn-sm btn-danger" 
-               onclick="return confirm('¿Eliminar este veterinario?')">Eliminar</a>
+            <form action="index.php?entidad=veterinario&accion=eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Desactivar este veterinario?')">
+              <?= \App\Support\Csrf::field() ?>
+              <input type="hidden" name="id" value="<?= (int) $fila['id'] ?>">
+              <button type="submit" class="btn btn-sm btn-danger">Desactivar</button>
+            </form>
           </td>
         </tr>
         <?php endforeach; ?>

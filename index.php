@@ -27,17 +27,13 @@ $usuarioActual   = Usuario::obtenerUsuarioActual();
 
 Router::authorize($entidad, $accion, $estaAutenticado, $esAdmin);
 
-if (Router::isStandaloneView($entidad, $accion)) {
-    Router::dispatch(__DIR__, $entidad, $accion);
-    exit();
-}
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veterinaria Ralah Pets - Sistema de Gesti髇</title>
+    <title>Veterinaria Ralah Pets - Sistema de Gesti贸n</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -46,22 +42,23 @@ if (Router::isStandaloneView($entidad, $accion)) {
             align-items: center;
             gap: 1rem;
             padding: 0.5rem 1rem;
-            background: rgba(255,255,255,0.1);
+            background: rgba(22,160,133,0.08);
+            border: 1px solid rgba(22,160,133,0.15);
             border-radius: 50px;
         }
         .user-info {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: white;
+            color: var(--dark);
             font-weight: 500;
         }
         .user-avatar {
             width: 35px;
             height: 35px;
             border-radius: 50%;
-            background: white;
-            color: #667eea;
+            background: var(--primary);
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -102,62 +99,101 @@ if (Router::isStandaloneView($entidad, $accion)) {
             color: #991b1b;
             border: 1px solid #fca5a5;
         }
+        header nav ul {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        header nav .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.55rem 0.7rem;
+            white-space: nowrap;
+        }
+        @media (max-width: 1100px) {
+            .header-container {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.75rem 1rem;
+            }
+            header nav ul {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
-    <header>
+    <header class="main-header">
         <div class="header-container">
             <a href="index.php?entidad=home&accion=ver" class="logo">
                 <i class="fas fa-paw"></i>
                 <div>
                     <h1>Ralah Pets</h1>
-                    <span>Cl韓ica Veterinaria</span>
+                    <span>Cl铆nica Veterinaria</span>
                 </div>
             </a>
 
-            <nav>
+            <nav class="main-nav" aria-label="Navegaci贸n principal">
                 <ul>
+                    <?php if ($estaAutenticado && $esAdmin): ?>
+                        <li><a class="nav-link <?= $entidad === 'admin' ? 'active' : '' ?>" href="index.php?entidad=admin&accion=dashboard"><i class="fas fa-th-large"></i> Panel</a></li>
+                        <li><a class="nav-link <?= $entidad === 'dueno' ? 'active' : '' ?>" href="index.php?entidad=dueno&accion=listar"><i class="fas fa-users"></i> Due帽os</a></li>
+                        <li><a class="nav-link <?= $entidad === 'mascota' ? 'active' : '' ?>" href="index.php?entidad=mascota&accion=listar"><i class="fas fa-dog"></i> Mascotas</a></li>
+                        <li><a class="nav-link <?= $entidad === 'cita' ? 'active' : '' ?>" href="index.php?entidad=cita&accion=listar"><i class="fas fa-calendar-check"></i> Citas</a></li>
+                        <li><a class="nav-link <?= $entidad === 'veterinario' ? 'active' : '' ?>" href="index.php?entidad=veterinario&accion=listar"><i class="fas fa-user-md"></i> Veterinarios</a></li>
+                        <li><a class="nav-link <?= $entidad === 'reporte' ? 'active' : '' ?>" href="index.php?entidad=reporte&accion=ver"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+                        <li><a class="nav-link <?= $entidad === 'admin' && in_array($accion, ['usuarios', 'listarUsuarios'], true) ? 'active' : '' ?>" href="index.php?entidad=admin&accion=usuarios"><i class="fas fa-user-cog"></i> Usuarios</a></li>
+                        <li><a class="nav-link <?= $entidad === 'reclamacion' ? 'active' : '' ?>" href="index.php?entidad=reclamacion&accion=listar"><i class="fas fa-book"></i> Reclamaciones</a></li>
+                        <li><a class="nav-link <?= $entidad === 'sugerencia' ? 'active' : '' ?>" href="index.php?entidad=sugerencia&accion=listar"><i class="fas fa-lightbulb"></i> Sugerencias</a></li>
+                        <li><a class="nav-link <?= $entidad === 'video' ? 'active' : '' ?>" href="index.php?entidad=video&accion=listar"><i class="fas fa-video"></i> Videos</a></li>
+                        <li><a class="nav-link <?= $entidad === 'ubicacion' ? 'active' : '' ?>" href="index.php?entidad=ubicacion&accion=ver"><i class="fas fa-map-marker-alt"></i> Ubicaci贸n</a></li>
+                    <?php elseif ($estaAutenticado): ?>
+                        <li><a class="nav-link <?= $entidad === 'usuario' && $accion === 'dashboard' ? 'active' : '' ?>" href="index.php?entidad=usuario&accion=dashboard"><i class="fas fa-home"></i> Inicio</a></li>
+                        <li><a class="nav-link <?= $accion === 'misMascotas' ? 'active' : '' ?>" href="index.php?entidad=usuario&accion=misMascotas"><i class="fas fa-paw"></i> Mis Mascotas</a></li>
+                        <li><a class="nav-link <?= $accion === 'misCitas' ? 'active' : '' ?>" href="index.php?entidad=usuario&accion=misCitas"><i class="fas fa-calendar"></i> Mis Citas</a></li>
+                        <li><a class="nav-link <?= $entidad === 'ubicacion' ? 'active' : '' ?>" href="index.php?entidad=ubicacion&accion=ver"><i class="fas fa-map-marker-alt"></i> Ubicaci贸n</a></li>
+                        <li><a class="nav-link <?= $entidad === 'video' ? 'active' : '' ?>" href="index.php?entidad=video&accion=verPublico"><i class="fas fa-video"></i> Videos</a></li>
+                        <li><a class="nav-link <?= $entidad === 'reclamacion' ? 'active' : '' ?>" href="index.php?entidad=reclamacion&accion=crear"><i class="fas fa-book"></i> Reclamaciones</a></li>
+                        <li><a class="nav-link <?= $entidad === 'sugerencia' ? 'active' : '' ?>" href="index.php?entidad=sugerencia&accion=crear"><i class="fas fa-lightbulb"></i> Sugerencias</a></li>
+                        <li><a class="nav-link <?= $entidad === 'usuario' && in_array($accion, ['perfil', 'verPerfil'], true) ? 'active' : '' ?>" href="index.php?entidad=usuario&accion=perfil"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                    <?php else: ?>
+                        <li><a class="nav-link <?= $entidad === 'home' ? 'active' : '' ?>" href="index.php?entidad=home&accion=ver"><i class="fas fa-home"></i> Inicio</a></li>
+                        <li><a class="nav-link <?= $entidad === 'veterinario' ? 'active' : '' ?>" href="index.php?entidad=veterinario&accion=verPublico"><i class="fas fa-user-md"></i> Veterinarios</a></li>
+                        <li><a class="nav-link <?= $entidad === 'video' ? 'active' : '' ?>" href="index.php?entidad=video&accion=verPublico"><i class="fas fa-video"></i> Videos</a></li>
+                        <li><a class="nav-link <?= $entidad === 'ubicacion' ? 'active' : '' ?>" href="index.php?entidad=ubicacion&accion=ver"><i class="fas fa-map-marker-alt"></i> Ubicaci贸n</a></li>
+                        <li><a class="nav-link <?= $entidad === 'reclamacion' ? 'active' : '' ?>" href="index.php?entidad=reclamacion&accion=crear"><i class="fas fa-book"></i> Reclamaciones</a></li>
+                        <li><a class="nav-link <?= $entidad === 'sugerencia' ? 'active' : '' ?>" href="index.php?entidad=sugerencia&accion=crear"><i class="fas fa-lightbulb"></i> Sugerencias</a></li>
+                        <li><a class="nav-link" href="index.php?entidad=auth&accion=mostrarLogin"><i class="fas fa-sign-in-alt"></i> Iniciar Sesi贸n</a></li>
+                        <li><a class="btn-register" href="index.php?entidad=auth&accion=mostrarRegistro">Registrarse</a></li>
+                    <?php endif; ?>
                     <?php if ($estaAutenticado): ?>
-                        <?php if ($esAdmin): ?>
-                            <li><a href="index.php?entidad=admin&accion=dashboard" class="<?= $entidad === 'admin' && $accion === 'dashboard' ? 'active' : '' ?>"><i class="fas fa-th-large"></i> Dashboard</a></li>
-                            <li><a href="index.php?entidad=dueno&accion=listar" class="<?= $entidad === 'dueno' ? 'active' : '' ?>"><i class="fas fa-users"></i> Due駉s</a></li>
-                            <li><a href="index.php?entidad=mascota&accion=listar" class="<?= $entidad === 'mascota' ? 'active' : '' ?>"><i class="fas fa-dog"></i> Mascotas</a></li>
-                            <li><a href="index.php?entidad=cita&accion=listar" class="<?= $entidad === 'cita' ? 'active' : '' ?>"><i class="fas fa-calendar-check"></i> Citas</a></li>
-                            <li><a href="index.php?entidad=veterinario&accion=listar" class="<?= $entidad === 'veterinario' ? 'active' : '' ?>"><i class="fas fa-user-md"></i> Veterinarios</a></li>
-                            <li><a href="index.php?entidad=reporte&accion=ver" class="<?= $entidad === 'reporte' ? 'active' : '' ?>"><i class="fas fa-chart-bar"></i> Reportes</a></li>
-                        <?php else: ?>
-                            <li><a href="index.php?entidad=usuario&accion=dashboard" class="<?= $entidad === 'usuario' && $accion === 'dashboard' ? 'active' : '' ?>"><i class="fas fa-home"></i> Inicio</a></li>
-                            <li><a href="index.php?entidad=usuario&accion=misMascotas" class="<?= $accion === 'misMascotas' ? 'active' : '' ?>"><i class="fas fa-paw"></i> Mis Mascotas</a></li>
-                            <li><a href="index.php?entidad=usuario&accion=misCitas" class="<?= $accion === 'misCitas' ? 'active' : '' ?>"><i class="fas fa-calendar"></i> Mis Citas</a></li>
-                            <li><a href="index.php?entidad=video&accion=verPublico" class="<?= $entidad === 'video' ? 'active' : '' ?>"><i class="fas fa-video"></i> Videos</a></li>
-                            <li><a href="index.php?entidad=ubicacion&accion=ver" class="<?= $entidad === 'ubicacion' ? 'active' : '' ?>"><i class="fas fa-map-marker-alt"></i> Ubicaci髇</a></li>
-                        <?php endif; ?>
-
-                        <li>
+                        <li class="user-menu-item">
                             <div class="user-menu">
-                                <a href="index.php?entidad=usuario&accion=perfil" class="user-info" style="text-decoration: none;">
-                                    <div class="user-avatar">
-                                        <?= Helper::e(strtoupper(substr((string) ($usuarioActual['nombre'] ?? 'U'), 0, 1))) ?>
-                                    </div>
+                                <span class="user-info">
+                                    <span class="user-avatar"><?= Helper::e(strtoupper(substr((string) ($usuarioActual['nombre'] ?? 'U'), 0, 1))) ?></span>
                                     <span><?= Helper::e((string) ($usuarioActual['nombre'] ?? '')) ?></span>
-                                </a>
-                                <a href="index.php?entidad=auth&accion=logout" class="btn-logout" title="Cerrar Sesi髇">
-                                    <i class="fas fa-sign-out-alt"></i> Salir
-                                </a>
+                                </span>
+                                <a href="index.php?entidad=auth&accion=logout" class="btn-logout" title="Cerrar Sesi贸n"><i class="fas fa-sign-out-alt"></i> Salir</a>
                             </div>
                         </li>
-                    <?php else: ?>
-                        <li><a href="index.php?entidad=home&accion=ver"><i class="fas fa-home"></i> Inicio</a></li>
-                        <li><a href="index.php?entidad=video&accion=verPublico"><i class="fas fa-video"></i> Videos</a></li>
-                        <li><a href="index.php?entidad=ubicacion&accion=ver"><i class="fas fa-map-marker-alt"></i> Ubicaci髇</a></li>
-                        <li><a href="index.php?entidad=auth&accion=mostrarLogin"><i class="fas fa-sign-in-alt"></i> Iniciar Sesi髇</a></li>
                     <?php endif; ?>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <?php if ($msgExito = Session::getFlash('exito') ?? Session::getFlash('success')): ?>
+    <?php
+    $msgExito = Session::getFlash('exito');
+    $msgSuccess = Session::getFlash('success');
+    $msgExito = $msgExito ?? $msgSuccess;
+    ?>
+    <?php if ($msgExito): ?>
         <div class="flash-banner flash-success"><?= Helper::e($msgExito) ?></div>
     <?php endif; ?>
     <?php if ($msgError = Session::getFlash('error')): ?>
@@ -172,7 +208,7 @@ if (Router::isStandaloneView($entidad, $accion)) {
         <div class="footer-content">
             <div class="footer-links">
                 <a href="index.php?entidad=home&accion=ver">Inicio</a>
-                <a href="index.php?entidad=ubicacion&accion=ver">Ubicaci髇</a>
+                <a href="index.php?entidad=ubicacion&accion=ver">Ubicaci贸n</a>
                 <a href="index.php?entidad=video&accion=verPublico">Videos</a>
                 <a href="index.php?entidad=reclamacion&accion=crear">Libro de Reclamaciones</a>
                 <a href="index.php?entidad=sugerencia&accion=crear">Sugerencias</a>

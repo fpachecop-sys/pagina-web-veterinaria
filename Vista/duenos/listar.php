@@ -143,9 +143,11 @@
           <td>
             <a href="index.php?entidad=dueno&accion=mostrarFormularioEditar&dni=<?= $fila['dni'] ?>" 
                class="btn btn-sm btn-warning">Editar</a>
-            <a href="index.php?entidad=dueno&accion=eliminar&dni=<?= $fila['dni'] ?>" 
-               class="btn btn-sm btn-danger" 
-               onclick="return confirm('¿Eliminar este dueño?')">Eliminar</a>
+            <form action="index.php?entidad=dueno&accion=eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Desactivar este dueño?')">
+              <?= \App\Support\Csrf::field() ?>
+              <input type="hidden" name="dni" value="<?= htmlspecialchars($fila['dni'], ENT_QUOTES, 'UTF-8') ?>">
+              <button type="submit" class="btn btn-sm btn-danger">Desactivar</button>
+            </form>
           </td>
         </tr>
         <?php endforeach; ?>

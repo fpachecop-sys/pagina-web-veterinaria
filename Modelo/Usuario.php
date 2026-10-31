@@ -34,6 +34,11 @@ class Usuario
         return isset($_SESSION['usuario_id']);
     }
 
+    public static function estaLogueado(): bool
+    {
+        return self::estaAutenticado();
+    }
+
     public static function esAdministrador(): bool
     {
         Session::start();

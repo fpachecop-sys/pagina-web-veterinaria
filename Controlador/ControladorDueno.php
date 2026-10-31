@@ -24,6 +24,7 @@ class ControladorDueno
     {
         $this->verificarAdmin();
         $duenos = Dueno::listarTodos();
+        $datos = $duenos;
         include __DIR__ . '/../Vista/duenos/listar.php';
     }
 
@@ -31,6 +32,11 @@ class ControladorDueno
     {
         $this->verificarAdmin();
         include __DIR__ . '/../Vista/duenos/agregar.php';
+    }
+
+    public function mostrarFormularioAgregar(): void
+    {
+        $this->agregar();
     }
 
     public function guardarNuevo(): void
@@ -64,6 +70,7 @@ class ControladorDueno
             $ok = Dueno::guardar($dni, $nombre, $telefono, $direccion);
             if ($ok) {
                 Session::setFlash('exito', 'Dueño registrado exitosamente.');
+                Session::setFlash('success', 'Dueño registrado exitosamente.');
             } else {
                 Session::setFlash('error', 'El DNI ingresado ya se encuentra registrado activo.');
                 header('Location: index.php?entidad=dueno&accion=agregar');
@@ -88,7 +95,13 @@ class ControladorDueno
             header('Location: index.php?entidad=dueno&accion=listar');
             exit();
         }
+        $d = $dueno;
         include __DIR__ . '/../Vista/duenos/editar.php';
+    }
+
+    public function mostrarFormularioEditar(): void
+    {
+        $this->editar();
     }
 
     public function actualizar(): void
@@ -121,6 +134,7 @@ class ControladorDueno
         try {
             Dueno::actualizar($dni, $nombre, $telefono, $direccion);
             Session::setFlash('exito', 'Datos del dueño actualizados correctamente.');
+            Session::setFlash('success', 'Datos del dueño actualizados correctamente.');
         } catch (\Throwable $e) {
             Logger::error('Error actualizando dueno', $e);
             Session::setFlash('error', 'No se pudo actualizar el dueño.');
@@ -133,23 +147,23 @@ class ControladorDueno
     public function eliminar(): void
     {
         $this->verificarAdmin();
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            Session::setFlash('error', 'Método no permitido para esta operación.');
-            header('Location: index.php?entidad=dueno&accion=listar');
-            exit();
-        }
-
         Session::start();
-        if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Csrf::verify($_POST['csrf_token'] ?? null)) {
             Session::setFlash('error', 'Token de seguridad inválido.');
             header('Location: index.php?entidad=dueno&accion=listar');
             exit();
         }
 
         $dni = trim((string) ($_POST['dni'] ?? ''));
+        if ($dni === '') {
+            Session::setFlash('error', 'El DNI del dueño no es válido.');
+            header('Location: index.php?entidad=dueno&accion=listar');
+            exit();
+        }
         try {
             Dueno::eliminar($dni);
             Session::setFlash('exito', 'Dueño y sus mascotas asociados han sido desactivados preservando el historial.');
+            Session::setFlash('success', 'Dueño y sus mascotas asociados han sido desactivados preservando el historial.');
         } catch (\Throwable $e) {
             Logger::error('Error desactivando dueno', $e);
             Session::setFlash('error', 'No se pudo desactivar el registro.');

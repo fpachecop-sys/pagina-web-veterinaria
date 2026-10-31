@@ -25,6 +25,7 @@ class ControladorMascota
     {
         $this->verificarAdmin();
         $mascotas = Mascota::listarTodas();
+        $datos = $mascotas;
         include __DIR__ . '/../Vista/mascotas/listar.php';
     }
 
@@ -33,6 +34,11 @@ class ControladorMascota
         $this->verificarAdmin();
         $duenos = Dueno::listarTodos();
         include __DIR__ . '/../Vista/mascotas/agregar.php';
+    }
+
+    public function mostrarFormularioAgregar(): void
+    {
+        $this->agregar();
     }
 
     public function guardarNuevo(): void
@@ -66,6 +72,7 @@ class ControladorMascota
                 trim((string) $_POST['dni_dueno'])
             );
             Session::setFlash('exito', 'Mascota registrada exitosamente.');
+            Session::setFlash('success', 'Mascota registrada exitosamente.');
         } catch (\Throwable $e) {
             Logger::error('Error guardando mascota', $e);
             Session::setFlash('error', 'Error al registrar la mascota. Verifique que el dueño exista.');
@@ -85,8 +92,14 @@ class ControladorMascota
             header('Location: index.php?entidad=mascota&accion=listar');
             exit();
         }
+        $m = $mascota;
         $duenos = Dueno::listarTodos();
         include __DIR__ . '/../Vista/mascotas/editar.php';
+    }
+
+    public function mostrarFormularioEditar(): void
+    {
+        $this->editar();
     }
 
     public function actualizar(): void
@@ -122,6 +135,7 @@ class ControladorMascota
                 trim((string) $_POST['dni_dueno'])
             );
             Session::setFlash('exito', 'Mascota actualizada correctamente.');
+            Session::setFlash('success', 'Mascota actualizada correctamente.');
         } catch (\Throwable $e) {
             Logger::error('Error actualizando mascota', $e);
             Session::setFlash('error', 'Error al actualizar los datos de la mascota.');
@@ -148,9 +162,15 @@ class ControladorMascota
         }
 
         $id = (int) ($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            Session::setFlash('error', 'El identificador de la mascota no es válido.');
+            header('Location: index.php?entidad=mascota&accion=listar');
+            exit();
+        }
         try {
             Mascota::eliminar($id);
             Session::setFlash('exito', 'Mascota desactivada preservando su historial clínico.');
+            Session::setFlash('success', 'Mascota desactivada preservando su historial clínico.');
         } catch (\Throwable $e) {
             Logger::error('Error desactivando mascota', $e);
             Session::setFlash('error', 'No se pudo desactivar la mascota.');

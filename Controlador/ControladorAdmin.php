@@ -26,7 +26,7 @@ class ControladorAdmin
 
     public function dashboard(): void
     {
-        $estadisticas = Reporte::obtenerEstadisticas();
+        $stats = Reporte::obtenerEstadisticas();
         $citasPorEstado = Reporte::obtenerCitasPorEstado();
         $mascotasPorEspecie = Reporte::obtenerMascotasPorEspecie();
         $citasRecientes = (new DashboardRepository(Database::getConnection()))->getCitasRecientesAdmin(10);
@@ -38,6 +38,12 @@ class ControladorAdmin
     {
         $usuarios = Usuario::listarTodos();
         include __DIR__ . '/../Vista/admin/usuarios_listar.php';
+    }
+
+    /** Alias para compatibilidad con enlaces antiguos. */
+    public function listarUsuarios(): void
+    {
+        $this->usuarios();
     }
 
     public function cambiarEstadoUsuario(): void

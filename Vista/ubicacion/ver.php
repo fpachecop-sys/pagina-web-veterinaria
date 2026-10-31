@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Ubicación - Veterinaria Ralah Pets</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
+<style>
         .ubicacion-header {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             padding: 40px;
             border-radius: 15px;
@@ -74,7 +68,7 @@
             width: 100%;
         }
         .schedule-table th {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             padding: 12px;
             text-align: center;
@@ -85,9 +79,11 @@
             border-bottom: 1px solid #e0e0e0;
         }
     </style>
-</head>
-<body>
-    <div class="ubicacion-header">
+
+
+
+    <div class="main-container">
+<div class="ubicacion-header">
         <h1>📍 NUESTRA UBICACIÓN</h1>
         <p>Encuéntranos fácilmente y ven a visitarnos</p>
     </div>
@@ -184,5 +180,4 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>

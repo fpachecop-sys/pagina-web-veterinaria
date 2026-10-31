@@ -164,9 +164,11 @@
           <td>
             <a href="index.php?entidad=mascota&accion=mostrarFormularioEditar&id=<?= $fila['id'] ?>" 
                class="btn btn-sm btn-warning">Editar</a>
-            <a href="index.php?entidad=mascota&accion=eliminar&id=<?= $fila['id'] ?>" 
-               class="btn btn-sm btn-danger" 
-               onclick="return confirm('¿Eliminar esta mascota?')">Eliminar</a>
+            <form action="index.php?entidad=mascota&accion=eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Desactivar esta mascota?')">
+              <?= \App\Support\Csrf::field() ?>
+              <input type="hidden" name="id" value="<?= (int) $fila['id'] ?>">
+              <button type="submit" class="btn btn-sm btn-danger">Desactivar</button>
+            </form>
           </td>
         </tr>
         <?php endforeach; ?>

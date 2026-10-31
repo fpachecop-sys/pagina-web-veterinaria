@@ -1,26 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Usuarios - Veterinaria Ralah Pets</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-</head>
-<body>
-    <!-- Header -->
-    <header class="main-header">
-        <div class="header-container">
-            <a href="index.php?entidad=admin&accion=dashboard" class="logo">
-                <span style="font-size: 2em;">🐾</span>
-                <h1>Ralah Pets - Admin</h1>
-            </a>
-            <nav class="main-nav">
-                <a href="index.php?entidad=admin&accion=dashboard" class="nav-link">Dashboard</a>
-                <a href="index.php?entidad=admin&accion=listarUsuarios" class="nav-link active">Usuarios</a>
-                <a href="index.php?entidad=auth&accion=logout" class="btn-login">Cerrar Sesión</a>
-            </nav>
-        </div>
-    </header>
+<!-- Header -->
+    
 
     <!-- Main Container -->
     <div class="main-container">
@@ -63,11 +42,14 @@
                             <td><?= date('d/m/Y', strtotime($usuario['fecha_registro'])) ?></td>
                             <td>
                                 <?php if ($usuario['rol'] != 'administrador'): ?>
-                                    <a href="index.php?entidad=admin&accion=cambiarEstadoUsuario&id=<?= $usuario['id'] ?>&activo=<?= $usuario['activo'] ? 0 : 1 ?>" 
-                                       class="btn btn-sm btn-<?= $usuario['activo'] ? 'warning' : 'success' ?>"
-                                       onclick="return confirm('¿Cambiar estado de este usuario?')">
+                                    <form action="index.php?entidad=admin&accion=cambiarEstadoUsuario" method="POST" style="display:inline" onsubmit="return confirm('¿Cambiar estado de este usuario?')">
+                                      <?= \App\Support\Csrf::field() ?>
+                                      <input type="hidden" name="id" value="<?= (int) $usuario['id'] ?>">
+                                      <input type="hidden" name="activo" value="<?= $usuario['activo'] ? 0 : 1 ?>">
+                                      <button type="submit" class="btn btn-sm btn-<?= $usuario['activo'] ? 'warning' : 'success' ?>">
                                         <?= $usuario['activo'] ? 'Desactivar' : 'Activar' ?>
-                                    </a>
+                                      </button>
+                                    </form>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -79,10 +61,3 @@
     </div>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-content">
-            <p><strong>© <?= date('Y') ?> Veterinaria Ralah Pets</strong></p>
-        </div>
-    </footer>
-</body>
-</html>

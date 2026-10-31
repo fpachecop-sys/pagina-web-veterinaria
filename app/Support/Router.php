@@ -9,7 +9,6 @@ use ReflectionMethod;
 final class Router
 {
     /**
-     * Mapa de entidades a sus archivos y clases de controlador.
      * @var array<string, array{file: string, class: string}>
      */
     private const CONTROLLERS = [
@@ -34,8 +33,8 @@ final class Router
     private const PUBLIC_ROUTES = [
         'home'        => ['ver'],
         'auth'        => ['mostrarLogin', 'mostrarRegistro', 'procesarLogin', 'procesarRegistro', 'logout'],
-        'reclamacion' => ['crear', 'guardar'],
-        'sugerencia'  => ['crear', 'guardar'],
+        'reclamacion' => ['crear', 'mostrarFormulario', 'guardar'],
+        'sugerencia'  => ['crear', 'mostrarFormulario', 'guardar'],
         'video'       => ['verPublico'],
         'ubicacion'   => ['ver'],
         'veterinario' => ['verPublico'],
@@ -45,15 +44,15 @@ final class Router
      * @var array<string, list<string>>
      */
     private const ADMIN_ROUTES = [
-        'admin'       => ['dashboard', 'usuarios', 'cambiarEstadoUsuario'],
-        'dueno'       => ['listar', 'agregar', 'guardarNuevo', 'editar', 'actualizar', 'eliminar'],
-        'mascota'     => ['listar', 'agregar', 'guardarNuevo', 'editar', 'actualizar', 'eliminar'],
-        'cita'        => ['listar', 'agregar', 'guardarNuevo', 'editar', 'actualizar', 'cambiarEstado', 'eliminar'],
-        'veterinario' => ['listar', 'agregar', 'guardarNuevo', 'editar', 'actualizar', 'eliminar'],
+        'admin'       => ['dashboard', 'usuarios', 'listarUsuarios', 'cambiarEstadoUsuario'],
+        'dueno'       => ['listar', 'agregar', 'mostrarFormularioAgregar', 'guardarNuevo', 'editar', 'mostrarFormularioEditar', 'actualizar', 'eliminar'],
+        'mascota'     => ['listar', 'agregar', 'mostrarFormularioAgregar', 'guardarNuevo', 'editar', 'mostrarFormularioEditar', 'actualizar', 'eliminar'],
+        'cita'        => ['listar', 'agregar', 'mostrarFormularioAgregar', 'guardarNuevo', 'editar', 'mostrarFormularioEditar', 'actualizar', 'cambiarEstado', 'eliminar'],
+        'veterinario' => ['listar', 'agregar', 'mostrarFormularioAgregar', 'guardarNuevo', 'editar', 'mostrarFormularioEditar', 'actualizar', 'eliminar'],
         'reporte'     => ['ver'],
         'reclamacion' => ['listar', 'cambiarEstado', 'eliminar'],
         'sugerencia'  => ['listar', 'eliminar'],
-        'video'       => ['listar', 'agregar', 'guardar', 'editar', 'actualizar', 'eliminar'],
+        'video'       => ['listar', 'agregar', 'mostrarFormularioAgregar', 'guardar', 'guardarNuevo', 'editar', 'mostrarFormularioEditar', 'actualizar', 'eliminar'],
     ];
 
     public static function sendSecurityHeaders(): void
@@ -75,12 +74,6 @@ final class Router
     {
         return isset(self::ADMIN_ROUTES[$entidad])
             && in_array($accion, self::ADMIN_ROUTES[$entidad], true);
-    }
-
-    public static function isStandaloneView(string $entidad, string $accion): bool
-    {
-        return ($entidad === 'home')
-            || ($entidad === 'auth' && in_array($accion, ['mostrarLogin', 'mostrarRegistro'], true));
     }
 
     public static function authorize(string $entidad, string $accion, bool $isAuthenticated, bool $isAdmin): void
@@ -126,7 +119,6 @@ final class Router
 
         $controller = new $className();
 
-        // SEGURIDAD (S3): Verificar que el método exista y sea estrictamente PUBLIC
         if (method_exists($controller, $accion)) {
             $reflection = new ReflectionMethod($controller, $accion);
             if ($reflection->isPublic() && !$reflection->isStatic() && !$reflection->isConstructor()) {

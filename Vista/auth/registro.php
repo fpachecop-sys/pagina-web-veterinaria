@@ -1,16 +1,20 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - Veterinaria Ralah Pets</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <style>
+<?php
+\App\Support\Session::start();
+$oldRegister = \App\Support\Session::get('old_register', []);
+\App\Support\Session::remove('old_register');
+$oldRegister = is_array($oldRegister) ? $oldRegister : [];
+$escapeOld = static fn (string $key): string => htmlspecialchars(
+    (string) ($oldRegister[$key] ?? ''),
+    ENT_QUOTES | ENT_SUBSTITUTE,
+    'UTF-8'
+);
+?>
+<style>
         .register-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            min-height: auto;
             padding: 40px 20px;
         }
         
@@ -106,8 +110,8 @@
             color: var(--danger);
         }
     </style>
-</head>
-<body>
+
+
     <div class="register-container">
         <div class="register-card">
             <div class="register-header">
@@ -115,15 +119,6 @@
                 <h1>Crear Cuenta</h1>
                 <p>Regístrate para acceder a todos nuestros servicios</p>
             </div>
-            
-            <?php
-            \App\Support\Session::start();
-            if (isset($_SESSION['error'])): ?>
-                <div class="alert alert-danger">
-                    <?= htmlspecialchars($_SESSION['error']) ?>
-                </div>
-                <?php unset($_SESSION['error']); ?>
-            <?php endif; ?>
             
             <form action="index.php?entidad=auth&accion=procesarRegistro" method="POST">
                 <?= \App\Support\Csrf::field() ?>
@@ -136,6 +131,8 @@
                             name="nombre" 
                             class="form-control" 
                             placeholder="Juan"
+                            value="<?= $escapeOld('nombre') ?>"
+                            autocomplete="given-name"
                             required
                         >
                     </div>
@@ -148,6 +145,8 @@
                             name="apellido" 
                             class="form-control" 
                             placeholder="Pérez"
+                            value="<?= $escapeOld('apellido') ?>"
+                            autocomplete="family-name"
                             required
                         >
                     </div>
@@ -164,6 +163,8 @@
                             placeholder="12345678"
                             pattern="[0-9]{8}"
                             title="Debe ingresar 8 dígitos"
+                            value="<?= $escapeOld('dni') ?>"
+                            autocomplete="off"
                             required
                         >
                     </div>
@@ -178,6 +179,8 @@
                             placeholder="987654321"
                             pattern="[0-9]{9}"
                             title="Debe ingresar 9 dígitos"
+                            value="<?= $escapeOld('telefono') ?>"
+                            autocomplete="tel"
                         >
                     </div>
                 </div>
@@ -190,6 +193,8 @@
                         name="email" 
                         class="form-control" 
                         placeholder="tucorreo@ejemplo.com"
+                        value="<?= $escapeOld('email') ?>"
+                        autocomplete="email"
                         required
                     >
                 </div>
@@ -202,6 +207,8 @@
                         name="direccion" 
                         class="form-control" 
                         placeholder="Av. Principal 123, Lima"
+                        value="<?= $escapeOld('direccion') ?>"
+                        autocomplete="street-address"
                     >
                 </div>
                 
@@ -215,6 +222,7 @@
                             class="form-control" 
                             placeholder="••••••••"
                             minlength="6"
+                            autocomplete="new-password"
                             required
                         >
                         <small style="color: var(--gray); font-size: 0.85em;">Mínimo 6 caracteres</small>
@@ -225,12 +233,14 @@
                         <input 
                             type="password" 
                             id="password_confirm" 
-                            name="password_confirm" 
+                            name="confirmar_password" 
                             class="form-control" 
                             placeholder="••••••••"
                             minlength="6"
+                            autocomplete="new-password"
                             required
                         >
+                        <small id="password-match-message" aria-live="polite" style="color: var(--danger); font-size: 0.85em;"></small>
                     </div>
                 </div>
                 
@@ -252,16 +262,25 @@
     </div>
     
     <script>
-        // Validar que las contraseñas coincidan
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const password = document.getElementById('password').value;
-            const confirm = document.getElementById('password_confirm').value;
-            
-            if (password !== confirm) {
-                e.preventDefault();
-                alert('Las contraseñas no coinciden');
+        const registerForm = document.querySelector('form');
+        const passwordInput = document.getElementById('password');
+        const confirmInput = document.getElementById('password_confirm');
+        const matchMessage = document.getElementById('password-match-message');
+
+        function validatePasswordMatch() {
+            const mismatch = confirmInput.value !== '' && passwordInput.value !== confirmInput.value;
+            confirmInput.setCustomValidity(mismatch ? 'Las contraseñas no coinciden.' : '');
+            matchMessage.textContent = mismatch ? 'Las contraseñas no coinciden.' : '';
+            return !mismatch;
+        }
+
+        passwordInput.addEventListener('input', validatePasswordMatch);
+        confirmInput.addEventListener('input', validatePasswordMatch);
+        registerForm.addEventListener('submit', function (event) {
+            if (!validatePasswordMatch()) {
+                event.preventDefault();
+                confirmInput.reportValidity();
+                confirmInput.focus();
             }
         });
     </script>
-</body>
-</html>

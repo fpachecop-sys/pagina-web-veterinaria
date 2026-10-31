@@ -79,9 +79,11 @@
                                 <small><?= htmlspecialchars($fila['sugerencia']) ?></small>
                             </td>
                             <td>
-                                <a href="index.php?entidad=sugerencia&accion=eliminar&id=<?= $fila['id'] ?>" 
-                                   class="btn btn-sm btn-danger"
-                                   onclick="return confirm('¿Eliminar esta sugerencia?')">Eliminar</a>
+                                <form action="index.php?entidad=sugerencia&accion=eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Eliminar esta sugerencia?')">
+                                    <?= \App\Support\Csrf::field() ?>
+                                    <input type="hidden" name="id" value="<?= (int) $fila['id'] ?>">
+                                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>

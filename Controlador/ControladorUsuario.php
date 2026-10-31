@@ -34,6 +34,7 @@ class ControladorUsuario
         $dashRepo = new DashboardRepository($db);
         $misCitas = $dashRepo->getCitasPorDniDueno($dni);
         $estadisticas = $dashRepo->getEstadisticasUsuario($dni);
+        $stats = $estadisticas;
 
         include __DIR__ . '/../Vista/usuario/dashboard.php';
     }
@@ -43,6 +44,12 @@ class ControladorUsuario
         $usuarioActual = Usuario::obtenerUsuarioActual();
         $usuario = Usuario::obtenerPorId((int) $usuarioActual['id']);
         include __DIR__ . '/../Vista/usuario/perfil.php';
+    }
+
+    /** Alias para enlaces antiguos que apuntan a usuario&accion=verPerfil. */
+    public function verPerfil(): void
+    {
+        $this->perfil();
     }
 
     public function editarPerfil(): void
@@ -101,7 +108,7 @@ class ControladorUsuario
 
         $passwordActual = (string) ($_POST['password_actual'] ?? '');
         $passwordNueva = (string) ($_POST['password_nueva'] ?? '');
-        $confirmarPassword = (string) ($_POST['confirmar_password'] ?? '');
+        $confirmarPassword = (string) ($_POST['confirmar_password'] ?? $_POST['password_confirmar'] ?? '');
 
         if ($passwordNueva !== $confirmarPassword) {
             Session::setFlash('error', 'Las contraseñas nuevas no coinciden.');

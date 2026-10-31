@@ -9,6 +9,25 @@ use App\Support\Session;
 
 class ControladorAuth
 {
+    /**
+     * Conserva los campos no sensibles del registro para mostrarlos tras una
+     * validación fallida. Nunca guarda las contraseñas en la sesión.
+     *
+     * @return array<string, string>
+     */
+    private function obtenerCamposSegurosRegistro(): array
+    {
+        $campos = ['nombre', 'apellido', 'dni', 'telefono', 'email', 'direccion'];
+        $datos = [];
+
+        foreach ($campos as $campo) {
+            $valor = $_POST[$campo] ?? '';
+            $datos[$campo] = is_scalar($valor) ? (string) $valor : '';
+        }
+
+        return $datos;
+    }
+
     public function mostrarLogin(): void
     {
         if (Usuario::estaAutenticado()) {
@@ -71,7 +90,9 @@ class ControladorAuth
         }
 
         Session::start();
+        $camposSeguros = $this->obtenerCamposSegurosRegistro();
         if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
+            Session::set('old_register', $camposSeguros);
             Session::setFlash('error', 'La sesión del formulario expiró. Intenta nuevamente.');
             header('Location: index.php?entidad=auth&accion=mostrarRegistro');
             exit();
@@ -82,17 +103,19 @@ class ControladorAuth
             'apellido'           => trim((string) ($_POST['apellido'] ?? '')),
             'email'              => trim((string) ($_POST['email'] ?? '')),
             'password'           => (string) ($_POST['password'] ?? ''),
-            'confirmar_password' => (string) ($_POST['confirmar_password'] ?? ''),
+            'confirmar_password' => (string) ($_POST['confirmar_password'] ?? $_POST['password_confirm'] ?? ''),
             'telefono'           => trim((string) ($_POST['telefono'] ?? '')),
             'direccion'          => trim((string) ($_POST['direccion'] ?? '')),
             'dni'                => trim((string) ($_POST['dni'] ?? '')),
             'rol'                => 'usuario',
         ];
 
+        Session::set('old_register', $camposSeguros);
         $resultado = Usuario::registrar($datos);
 
         if ($resultado['exito']) {
-            Session::setFlash('registro_exitoso', $resultado['mensaje']);
+            Session::remove('old_register');
+            Session::setFlash('success', $resultado['mensaje']);
             header('Location: index.php?entidad=auth&accion=mostrarLogin');
         } else {
             Session::setFlash('error', $resultado['mensaje']);

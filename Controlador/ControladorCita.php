@@ -25,6 +25,7 @@ class ControladorCita
     {
         $this->verificarAdmin();
         $citas = Cita::listarTodas();
+        $datos = $citas;
         include __DIR__ . '/../Vista/citas/listar.php';
     }
 
@@ -34,6 +35,11 @@ class ControladorCita
         $mascotas = Mascota::listarTodas();
         $veterinarios = Veterinario::listarTodos();
         include __DIR__ . '/../Vista/citas/agregar.php';
+    }
+
+    public function mostrarFormularioAgregar(): void
+    {
+        $this->agregar();
     }
 
     public function guardarNuevo(): void
@@ -54,6 +60,7 @@ class ControladorCita
         $res = (new CitaService())->agendarCita($_POST);
         if ($res['exito']) {
             Session::setFlash('exito', $res['mensaje']);
+            Session::setFlash('success', $res['mensaje']);
             header('Location: index.php?entidad=cita&accion=listar');
         } else {
             Session::setFlash('error', $res['mensaje']);
@@ -72,9 +79,15 @@ class ControladorCita
             header('Location: index.php?entidad=cita&accion=listar');
             exit();
         }
+        $c = $cita;
         $mascotas = Mascota::listarTodas();
         $veterinarios = Veterinario::listarTodos();
         include __DIR__ . '/../Vista/citas/editar.php';
+    }
+
+    public function mostrarFormularioEditar(): void
+    {
+        $this->editar();
     }
 
     public function actualizar(): void
@@ -96,6 +109,7 @@ class ControladorCita
         $res = (new CitaService())->actualizarCita($id, $_POST);
         if ($res['exito']) {
             Session::setFlash('exito', $res['mensaje']);
+            Session::setFlash('success', $res['mensaje']);
             header('Location: index.php?entidad=cita&accion=listar');
         } else {
             Session::setFlash('error', $res['mensaje']);
@@ -122,10 +136,16 @@ class ControladorCita
 
         $id = (int) ($_POST['id'] ?? 0);
         $estado = trim((string) ($_POST['estado'] ?? ''));
+        if ($id <= 0) {
+            Session::setFlash('error', 'El identificador de la cita no es válido.');
+            header('Location: index.php?entidad=cita&accion=listar');
+            exit();
+        }
 
         $res = (new CitaService())->cambiarEstado($id, $estado);
         if ($res['exito']) {
             Session::setFlash('exito', $res['mensaje']);
+            Session::setFlash('success', $res['mensaje']);
         } else {
             Session::setFlash('error', $res['mensaje']);
         }
@@ -151,8 +171,14 @@ class ControladorCita
         }
 
         $id = (int) ($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            Session::setFlash('error', 'El identificador de la cita no es válido.');
+            header('Location: index.php?entidad=cita&accion=listar');
+            exit();
+        }
         if (Cita::eliminar($id)) {
             Session::setFlash('exito', 'Cita eliminada correctamente.');
+            Session::setFlash('success', 'Cita eliminada correctamente.');
         } else {
             Session::setFlash('error', 'No se pudo eliminar la cita.');
         }

@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil - Veterinaria Ralah Pets</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <style>
+<style>
         .perfil-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -55,46 +48,15 @@
             }
         }
     </style>
-</head>
-<body>
+
+
     <!-- Header -->
-    <header class="main-header">
-        <div class="header-container">
-            <a href="index.php?entidad=usuario&accion=dashboard" class="logo">
-                <span style="font-size: 2em;">🐾</span>
-                <h1>Ralah Pets</h1>
-            </a>
-            <nav class="main-nav">
-                <a href="index.php?entidad=usuario&accion=dashboard" class="nav-link">Mi Panel</a>
-                <a href="index.php?entidad=usuario&accion=verPerfil" class="nav-link active">Mi Perfil</a>
-                <a href="index.php?entidad=usuario&accion=misMascotas" class="nav-link">Mis Mascotas</a>
-                <a href="index.php?entidad=usuario&accion=misCitas" class="nav-link">Mis Citas</a>
-                <a href="index.php?entidad=ubicacion&accion=ver" class="nav-link">Ubicación</a>
-                <a href="index.php?entidad=video&accion=verPublico" class="nav-link">Videos</a>
-                <a href="index.php?entidad=auth&accion=logout" class="btn-login">Cerrar Sesión</a>
-            </nav>
-        </div>
-    </header>
+    
 
     <!-- Main Container -->
     <div class="main-container">
         <h2 style="color: var(--primary); margin-bottom: 30px;">👤 Mi Perfil</h2>
-        
-        <?php if (isset($_SESSION['success'])): ?>
-            <div class="alert alert-success">
-                <?= htmlspecialchars($_SESSION['success']) ?>
-            </div>
-            <?php unset($_SESSION['success']); ?>
-        <?php endif; ?>
-        
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="alert alert-danger">
-                <?= htmlspecialchars($_SESSION['error']) ?>
-            </div>
-            <?php unset($_SESSION['error']); ?>
-        <?php endif; ?>
-
-        <div class="perfil-container">
+<div class="perfil-container">
             <!-- Información Personal -->
             <div class="perfil-card">
                 <h3>📋 Información Personal</h3>
@@ -178,6 +140,7 @@
         <div class="edit-section">
             <h3 style="color: var(--primary); margin-bottom: 20px;">🔒 Cambiar Contraseña</h3>
             <form action="index.php?entidad=usuario&accion=cambiarPassword" method="POST" style="max-width: 600px;">
+                <?= \App\Support\Csrf::field() ?>
                 <div class="form-group">
                     <label for="password_actual" class="form-label">Contraseña Actual</label>
                     <input type="password" id="password_actual" name="password_actual" 
@@ -192,7 +155,7 @@
                 
                 <div class="form-group">
                     <label for="password_confirmar" class="form-label">Confirmar Nueva Contraseña</label>
-                    <input type="password" id="password_confirmar" name="password_confirmar" 
+                    <input type="password" id="password_confirmar" name="confirmar_password" 
                            class="form-control" minlength="6" required>
                 </div>
                 
@@ -204,12 +167,3 @@
     </div>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-content">
-            <p><strong>© <?= date('Y') ?> Veterinaria Ralah Pets</strong></p>
-            <p>Los Olivos Huandoy, San Martin de Porres - Lima, Perú</p>
-            <p>📞 943 626 841 | 📧 info@veterinariaralah.com</p>
-        </div>
-    </footer>
-</body>
-</html>

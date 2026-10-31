@@ -84,6 +84,7 @@
         </div>
 
         <form action="index.php?entidad=video&accion=guardarNuevo" method="POST">
+            <?= \App\Support\Csrf::field() ?>
             <div class="mb-3">
                 <label for="titulo" class="form-label">Título del Video</label>
                 <input type="text" name="titulo" id="titulo" class="form-control" 

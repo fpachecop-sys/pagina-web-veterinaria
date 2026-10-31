@@ -28,6 +28,40 @@ final class AuthAndSecurityTest extends TestCase
         $this->assertNull(AuthValidator::validateRegistro($data));
     }
 
+    public function testValidatorAcceptsConfirmationFieldUsedByRegistrationForm(): void
+    {
+        $data = [
+            'nombre'             => 'Franco',
+            'apellido'           => 'Pacheco',
+            'email'              => 'franco@example.com',
+            'dni'                => '75085925',
+            'telefono'           => '978475665',
+            'direccion'          => 'Lima Norte',
+            'password'           => 'ClaveSegura123',
+            'password_confirm'   => 'ClaveSegura123',
+        ];
+
+        $this->assertNull(AuthValidator::validateRegistro($data));
+    }
+
+    public function testValidatorRejectsMissingPasswordConfirmation(): void
+    {
+        $data = [
+            'nombre'    => 'Franco',
+            'apellido'  => 'Pacheco',
+            'email'     => 'franco@example.com',
+            'dni'       => '75085925',
+            'telefono'  => '978475665',
+            'direccion' => 'Lima Norte',
+            'password'  => 'ClaveSegura123',
+        ];
+
+        $this->assertSame(
+            'La confirmación de contraseña es obligatoria.',
+            AuthValidator::validateRegistro($data)
+        );
+    }
+
     public function testValidatorRejectsInvalidDniAndPhone(): void
     {
         $data = [
