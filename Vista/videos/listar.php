@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Videos - Veterinaria Ralah Pets</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         h1 {
@@ -96,10 +91,10 @@
             text-align: center;
         }
     </style>
-</head>
-<body>
+
+
     <h1>🎥 Videos de Servicios y Productos</h1>
-    
+
     <div class="admin-section">
         <p><strong>Panel de Administración</strong></p>
         <a href="index.php?entidad=video&accion=mostrarFormularioAgregar" class="btn btn-add">
@@ -117,9 +112,9 @@
                 <?php if ($video['activo']): ?>
                     <div class="video-card">
                         <div class="video-container">
-                            <iframe src="<?= htmlspecialchars($video['url_video']) ?>" 
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            <iframe src="<?= htmlspecialchars($video['url_video']) ?>"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowfullscreen>
                             </iframe>
                         </div>
@@ -133,7 +128,7 @@
                                 </span>
                             </div>
                             <div class="video-actions">
-                                <a href="index.php?entidad=video&accion=mostrarFormularioEditar&id=<?= $video['id'] ?>" 
+                                <a href="index.php?entidad=video&accion=mostrarFormularioEditar&id=<?= $video['id'] ?>"
                                    class="btn btn-sm btn-warning">Editar</a>
                                 <form action="index.php?entidad=video&accion=eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Eliminar este video?')">
                                     <?= \App\Support\Csrf::field() ?>
@@ -147,5 +142,3 @@
             <?php endforeach; ?>
         <?php endif; ?>
     </div>
-</body>
-</html>

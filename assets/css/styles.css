@@ -34,10 +34,18 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #f5f7f6;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     color: var(--dark);
     line-height: 1.6;
+}
+
+body > main {
+    flex: 1 0 auto;
+    width: 100%;
+    padding: 28px 20px;
 }
 
 /* ========== HEADER PRINCIPAL ========== */
@@ -134,7 +142,7 @@ body {
 }
 
 /* ========== SECCIÓN HERO (BIENVENIDA) ========== */
-.hero-section {
+body:has(.hero-section) .hero-section {
     background: linear-gradient(135deg, rgba(22, 160, 133, 0.9) 0%, rgba(14, 118, 100, 0.9) 100%),
                 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><path d="M0,300 Q300,100 600,300 T1200,300 L1200,600 L0,600 Z" fill="rgba(255,255,255,0.1)"/></svg>');
     background-size: cover;
@@ -425,6 +433,93 @@ body {
     margin: 0 auto;
 }
 
+footer.main-footer {
+    flex: 0 0 auto;
+    margin-top: 48px;
+    padding: 30px 20px 24px;
+    background: #172a27;
+    color: #e8f2ef;
+    text-align: center;
+    box-shadow: 0 -8px 24px rgba(22, 42, 39, 0.08);
+}
+
+.main-footer .footer-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    margin-bottom: 18px;
+}
+
+.main-footer .footer-links a {
+    color: #c6ded8;
+    text-decoration: none;
+    font-size: 0.92rem;
+    transition: color 0.2s ease;
+}
+
+.main-footer .footer-links a:hover,
+.main-footer .footer-links a:focus-visible {
+    color: #71e0c6;
+}
+
+.main-footer p + p { margin-top: 4px; }
+
+/* Portada: una identidad editorial más contundente, con bloques y bordes */
+body:has(.hero-section) {
+    background: #f4f1e8;
+    color: #18221f;
+}
+
+body:has(.hero-section) > main { padding: 0; }
+
+.hero-section {
+    min-height: 490px;
+    display: grid;
+    place-items: center;
+    margin: 0;
+    padding: 78px 24px;
+    color: #18221f;
+    text-align: left;
+    background: #c7f36b;
+    border-bottom: 3px solid #18221f;
+}
+
+body:has(.hero-section) .hero-content { width: min(1080px, 100%); }
+body:has(.hero-section) .hero-content h2 {
+    max-width: 900px;
+    font-size: clamp(2.8rem, 7vw, 6.2rem);
+    line-height: 0.98;
+    letter-spacing: -0.065em;
+    text-shadow: none;
+}
+body:has(.hero-section) .hero-content p { max-width: 660px; font-size: 1.15rem; }
+body:has(.hero-section) .btn-hero { border: 2px solid #18221f; border-radius: 3px; box-shadow: 5px 5px 0 #18221f; }
+body:has(.hero-section) .btn-hero-primary { background: #18221f; color: #fff; }
+body:has(.hero-section) .btn-hero-secondary { color: #18221f; border-color: #18221f; }
+body:has(.hero-section) .btn-hero-secondary:hover { background: #18221f; color: #fff; }
+.main-container { background: transparent; box-shadow: none; }
+.main-container > section, .main-container > .stats-grid { margin-block: 52px; }
+body:has(.hero-section) .main-container .card,
+body:has(.hero-section) .feature-card,
+body:has(.hero-section) .stat-card,
+body:has(.hero-section) .testimonial-card,
+body:has(.hero-section) .cta-section {
+    border: 2px solid #18221f;
+    border-radius: 4px;
+    box-shadow: 6px 6px 0 #18221f;
+}
+body:has(.hero-section) .feature-card:hover { transform: translate(-2px, -2px); box-shadow: 9px 9px 0 #18221f; }
+body:has(.hero-section) .feature-icon { color: #167b67; }
+body:has(.hero-section) .cta-section { background: #167b67; border-color: #18221f; }
+
+.scroll-reveal { opacity: 0; transform: translateY(24px); transition: opacity 500ms ease, transform 500ms ease; }
+.scroll-reveal.is-visible { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+    .scroll-reveal { opacity: 1; transform: none; transition: none; }
+    html:focus-within { scroll-behavior: auto; }
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
     .header-container {
@@ -452,6 +547,10 @@ body {
     .table {
         font-size: 0.9em;
     }
+    body > main { padding: 20px 12px; }
+    .hero-section { min-height: 400px; padding: 58px 20px; }
+    .main-container { padding: 12px; }
+    footer.main-footer { margin-top: 28px; }
 }
 
 /* ========== UTILIDADES ========== */

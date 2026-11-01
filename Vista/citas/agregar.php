@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Agendar Cita - Veterinaria Ralah Pets</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     .card {
@@ -81,8 +76,8 @@
       margin-bottom: 0;
     }
   </style>
-</head>
-<body>
+
+
 
 <div class="card">
   <h2>📅 Agendar Nueva Cita</h2>
@@ -91,7 +86,7 @@
     <div class="row">
       <div class="col-md-6 mb-3">
         <label for="fecha" class="form-label">Fecha</label>
-        <input type="date" name="fecha" id="fecha" class="form-control" 
+        <input type="date" name="fecha" id="fecha" class="form-control"
                min="<?= date('Y-m-d') ?>" required>
       </div>
 
@@ -107,7 +102,7 @@
         <option value="">--Seleccione una mascota--</option>
         <?php foreach ($mascotas as $mascota): ?>
           <option value="<?= htmlspecialchars($mascota['id']) ?>">
-            <?= htmlspecialchars($mascota['nombre']) ?> 
+            <?= htmlspecialchars($mascota['nombre']) ?>
             (Dueño: <?= htmlspecialchars($mascota['nombre_dueno']) ?>)
           </option>
         <?php endforeach; ?>
@@ -120,7 +115,7 @@
         <option value="">--Seleccione un veterinario--</option>
         <?php foreach ($veterinarios as $vet): ?>
           <option value="<?= htmlspecialchars($vet['id']) ?>">
-            <?= htmlspecialchars($vet['nombre']) ?> 
+            <?= htmlspecialchars($vet['nombre']) ?>
             (<?= htmlspecialchars($vet['especialidad']) ?>)
           </option>
         <?php endforeach; ?>
@@ -129,7 +124,7 @@
 
     <div class="mb-3">
       <label for="motivo" class="form-label">Motivo de la Consulta</label>
-      <textarea name="motivo" id="motivo" class="form-control" rows="3" 
+      <textarea name="motivo" id="motivo" class="form-control" rows="3"
                 placeholder="Describa el motivo de la cita..." required></textarea>
     </div>
 
@@ -137,6 +132,3 @@
     <a href="index.php?entidad=cita&accion=listar" class="btn btn-secondary">Cancelar</a>
   </form>
 </div>
-
-</body>
-</html>

@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Lista de Dueños - Veterinaria Ralah Pets</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     h1 {
@@ -108,8 +103,8 @@
       transform: translateY(-2px);
     }
   </style>
-</head>
-<body>
+
+
 
 <h1>👥 Listado de Dueños</h1>
 
@@ -141,7 +136,7 @@
           <td><?= htmlspecialchars($fila["telefono"]) ?></td>
           <td><?= htmlspecialchars($fila["direccion"]) ?></td>
           <td>
-            <a href="index.php?entidad=dueno&accion=mostrarFormularioEditar&dni=<?= $fila['dni'] ?>" 
+            <a href="index.php?entidad=dueno&accion=mostrarFormularioEditar&dni=<?= $fila['dni'] ?>"
                class="btn btn-sm btn-warning">Editar</a>
             <form action="index.php?entidad=dueno&accion=eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Desactivar este dueño?')">
               <?= \App\Support\Csrf::field() ?>
@@ -155,6 +150,3 @@
     </tbody>
   </table>
 </div>
-
-</body>
-</html>

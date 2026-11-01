@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+// Los controladores procesan POST y emiten redirecciones durante el despacho,
+// que sucede después de construir la plantilla común. El buffer mantiene los
+// encabezados HTTP editables hasta que el controlador termine.
+ob_start();
+
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/Modelo/Usuario.php';
 
@@ -170,7 +175,6 @@ Router::authorize($entidad, $accion, $estaAutenticado, $esAdmin);
                         <li><a class="nav-link <?= $entidad === 'reclamacion' ? 'active' : '' ?>" href="index.php?entidad=reclamacion&accion=crear"><i class="fas fa-book"></i> Reclamaciones</a></li>
                         <li><a class="nav-link <?= $entidad === 'sugerencia' ? 'active' : '' ?>" href="index.php?entidad=sugerencia&accion=crear"><i class="fas fa-lightbulb"></i> Sugerencias</a></li>
                         <li><a class="nav-link" href="index.php?entidad=auth&accion=mostrarLogin"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a></li>
-                        <li><a class="btn-register" href="index.php?entidad=auth&accion=mostrarRegistro">Registrarse</a></li>
                     <?php endif; ?>
                     <?php if ($estaAutenticado): ?>
                         <li class="user-menu-item">
@@ -204,7 +208,7 @@ Router::authorize($entidad, $accion, $estaAutenticado, $esAdmin);
         <?php Router::dispatch(__DIR__, $entidad, $accion); ?>
     </main>
 
-    <footer>
+    <footer class="main-footer">
         <div class="footer-content">
             <div class="footer-links">
                 <a href="index.php?entidad=home&accion=ver">Inicio</a>

@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Lista de Veterinarios - Veterinaria Ralah Pets</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     h1 {
@@ -106,8 +101,8 @@
       background: #3498db;
     }
   </style>
-</head>
-<body>
+
+
 
 <h1>⚕️ Listado de Veterinarios</h1>
 
@@ -141,7 +136,7 @@
           <td><?= htmlspecialchars($fila["correo"]) ?></td>
           <td><?= htmlspecialchars($fila["telefono"]) ?></td>
           <td>
-            <a href="index.php?entidad=veterinario&accion=mostrarFormularioEditar&id=<?= $fila['id'] ?>" 
+            <a href="index.php?entidad=veterinario&accion=mostrarFormularioEditar&id=<?= $fila['id'] ?>"
                class="btn btn-sm btn-warning">Editar</a>
             <form action="index.php?entidad=veterinario&accion=eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Desactivar este veterinario?')">
               <?= \App\Support\Csrf::field() ?>
@@ -155,6 +150,3 @@
     </tbody>
   </table>
 </div>
-
-</body>
-</html>

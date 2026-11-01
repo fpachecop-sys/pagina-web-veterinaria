@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Editar Dueño - Veterinaria Ralah Pets</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     .card {
@@ -77,8 +72,8 @@
       transform: translateY(-2px);
     }
   </style>
-</head>
-<body>
+
+
 
 <div class="card">
   <h2>✏️ Editar Dueño</h2>
@@ -88,20 +83,20 @@
 
     <div class="mb-3">
       <label for="nombre" class="form-label">Nombre Completo</label>
-      <input type="text" name="nombre" id="nombre" class="form-control" 
+      <input type="text" name="nombre" id="nombre" class="form-control"
              value="<?= htmlspecialchars($dueno['nombre']) ?>" required>
     </div>
 
     <div class="mb-3">
       <label for="telefono" class="form-label">Teléfono</label>
-      <input type="text" name="telefono" id="telefono" class="form-control" 
-             pattern="[0-9]{9}" 
+      <input type="text" name="telefono" id="telefono" class="form-control"
+             pattern="[0-9]{9}"
              value="<?= htmlspecialchars($dueno['telefono']) ?>" required>
     </div>
 
     <div class="mb-3">
       <label for="direccion" class="form-label">Dirección</label>
-      <input type="text" name="direccion" id="direccion" class="form-control" 
+      <input type="text" name="direccion" id="direccion" class="form-control"
              value="<?= htmlspecialchars($dueno['direccion']) ?>" required>
     </div>
 
@@ -109,6 +104,3 @@
     <a href="index.php?entidad=dueno&accion=listar" class="btn btn-secondary">Cancelar</a>
   </form>
 </div>
-
-</body>
-</html>

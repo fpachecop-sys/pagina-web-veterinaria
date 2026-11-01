@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Editar Mascota - Veterinaria Ralah Pets</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     .card {
@@ -77,8 +72,8 @@
       transform: translateY(-2px);
     }
   </style>
-</head>
-<body>
+
+
 
 <div class="card">
   <h2>✏️ Editar Mascota</h2>
@@ -88,7 +83,7 @@
 
     <div class="mb-3">
       <label for="nombre" class="form-label">Nombre de la Mascota</label>
-      <input type="text" name="nombre" id="nombre" class="form-control" 
+      <input type="text" name="nombre" id="nombre" class="form-control"
              value="<?= htmlspecialchars($mascota['nombre']) ?>" required>
     </div>
 
@@ -104,13 +99,13 @@
 
     <div class="mb-3">
       <label for="raza" class="form-label">Raza</label>
-      <input type="text" name="raza" id="raza" class="form-control" 
+      <input type="text" name="raza" id="raza" class="form-control"
              value="<?= htmlspecialchars($mascota['raza']) ?>" required>
     </div>
 
     <div class="mb-3">
       <label for="edad" class="form-label">Edad (años)</label>
-      <input type="number" name="edad" id="edad" class="form-control" 
+      <input type="number" name="edad" id="edad" class="form-control"
              min="0" max="30" value="<?= htmlspecialchars($mascota['edad']) ?>" required>
     </div>
 
@@ -118,7 +113,7 @@
       <label for="dni_dueno" class="form-label">Dueño</label>
       <select name="dni_dueno" id="dni_dueno" class="form-control" required>
         <?php foreach ($duenos as $dueno): ?>
-          <option value="<?= htmlspecialchars($dueno['dni']) ?>" 
+          <option value="<?= htmlspecialchars($dueno['dni']) ?>"
                   <?= $mascota['dni_dueno']==$dueno['dni']?'selected':'' ?>>
             <?= htmlspecialchars($dueno['nombre']) ?> (DNI: <?= htmlspecialchars($dueno['dni']) ?>)
           </option>
@@ -130,6 +125,3 @@
     <a href="index.php?entidad=mascota&accion=listar" class="btn btn-secondary">Cancelar</a>
   </form>
 </div>
-
-</body>
-</html>

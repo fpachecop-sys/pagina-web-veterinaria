@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Video</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="p-4">
+
+<div class="p-4">
 
 <h2>✏️ Editar Video</h2>
 
@@ -44,5 +39,4 @@
     <a href="index.php?entidad=video&accion=listar" class="btn btn-secondary">Cancelar</a>
 </form>
 
-</body>
-</html>
+</div>

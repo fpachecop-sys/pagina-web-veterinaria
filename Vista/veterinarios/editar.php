@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Editar Veterinario - Veterinaria Ralah Pets</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     .card {
@@ -77,8 +72,8 @@
       transform: translateY(-2px);
     }
   </style>
-</head>
-<body>
+
+
 
 <div class="card">
   <h2>✏️ Editar Veterinario</h2>
@@ -88,26 +83,26 @@
 
     <div class="mb-3">
       <label for="nombre" class="form-label">Nombre Completo</label>
-      <input type="text" name="nombre" id="nombre" class="form-control" 
+      <input type="text" name="nombre" id="nombre" class="form-control"
              value="<?= htmlspecialchars($veterinario['nombre']) ?>" required>
     </div>
 
     <div class="mb-3">
       <label for="especialidad" class="form-label">Especialidad</label>
-      <input type="text" name="especialidad" id="especialidad" class="form-control" 
+      <input type="text" name="especialidad" id="especialidad" class="form-control"
              value="<?= htmlspecialchars($veterinario['especialidad']) ?>" required>
     </div>
 
     <div class="mb-3">
       <label for="correo" class="form-label">Correo Electrónico</label>
-      <input type="email" name="correo" id="correo" class="form-control" 
+      <input type="email" name="correo" id="correo" class="form-control"
              value="<?= htmlspecialchars($veterinario['correo']) ?>" required>
     </div>
 
     <div class="mb-3">
       <label for="telefono" class="form-label">Teléfono</label>
-      <input type="text" name="telefono" id="telefono" class="form-control" 
-             pattern="[0-9]{9}" 
+      <input type="text" name="telefono" id="telefono" class="form-control"
+             pattern="[0-9]{9}"
              value="<?= htmlspecialchars($veterinario['telefono']) ?>" required>
     </div>
 
@@ -115,6 +110,3 @@
     <a href="index.php?entidad=veterinario&accion=listar" class="btn btn-secondary">Cancelar</a>
   </form>
 </div>
-
-</body>
-</html>

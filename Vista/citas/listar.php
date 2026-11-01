@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Lista de Citas - Veterinaria Ralah Pets</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     h1 {
@@ -142,8 +137,8 @@
       color: #721c24;
     }
   </style>
-</head>
-<body>
+
+
 
 <h1>📅 Listado de Citas</h1>
 
@@ -201,7 +196,7 @@
                 <button type="submit" class="btn btn-sm btn-secondary" title="Cancelar cita">✕</button>
               </form>
             <?php endif; ?>
-            <a href="index.php?entidad=cita&accion=mostrarFormularioEditar&id=<?= $fila['id'] ?>" 
+            <a href="index.php?entidad=cita&accion=mostrarFormularioEditar&id=<?= $fila['id'] ?>"
                class="btn btn-sm btn-warning">Editar</a>
             <form action="index.php?entidad=cita&accion=eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Eliminar esta cita?')">
               <?= \App\Support\Csrf::field() ?>
@@ -215,6 +210,3 @@
     </tbody>
   </table>
 </div>
-
-</body>
-</html>

@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Lista de Mascotas - Veterinaria Ralah Pets</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     h1 {
@@ -117,8 +112,8 @@
       background: #16a085 !important;
     }
   </style>
-</head>
-<body>
+
+
 
 <h1>🐾 Listado de Mascotas</h1>
 
@@ -150,7 +145,7 @@
           <td><?= htmlspecialchars($fila["id"]) ?></td>
           <td><strong><?= htmlspecialchars($fila["nombre"]) ?></strong></td>
           <td>
-            <?php 
+            <?php
               $badgeClass = '';
               if ($fila["especie"] == 'Perro') $badgeClass = 'bg-primary';
               elseif ($fila["especie"] == 'Gato') $badgeClass = 'bg-success';
@@ -162,7 +157,7 @@
           <td><?= htmlspecialchars($fila["edad"]) ?> años</td>
           <td><?= htmlspecialchars($fila["nombre_dueno"]) ?></td>
           <td>
-            <a href="index.php?entidad=mascota&accion=mostrarFormularioEditar&id=<?= $fila['id'] ?>" 
+            <a href="index.php?entidad=mascota&accion=mostrarFormularioEditar&id=<?= $fila['id'] ?>"
                class="btn btn-sm btn-warning">Editar</a>
             <form action="index.php?entidad=mascota&accion=eliminar" method="POST" style="display:inline" onsubmit="return confirm('¿Desactivar esta mascota?')">
               <?= \App\Support\Csrf::field() ?>
@@ -176,6 +171,3 @@
     </tbody>
   </table>
 </div>
-
-</body>
-</html>

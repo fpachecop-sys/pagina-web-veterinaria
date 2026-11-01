@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Reportes - Veterinaria Ralah Pets</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -120,8 +115,8 @@
       font-weight: 600;
     }
   </style>
-</head>
-<body>
+
+
 
 <h1>📊 Reportes y Estadísticas</h1>
 
@@ -273,6 +268,3 @@ new Chart(ctxEspecies, {
   }
 });
 </script>
-
-</body>
-</html>

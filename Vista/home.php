@@ -5,7 +5,7 @@
             gap: 30px;
             margin: 50px 0;
         }
-        
+
         .feature-card {
             background: white;
             padding: 30px;
@@ -14,67 +14,67 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
         }
-        
+
         .feature-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
-        
+
         .feature-icon {
             font-size: 3.5em;
             margin-bottom: 15px;
         }
-        
+
         .feature-card h3 {
             color: var(--primary);
             margin-bottom: 15px;
             font-size: 1.4em;
         }
-        
+
         .feature-card p {
             color: var(--gray);
             line-height: 1.6;
         }
-        
+
         .testimonials {
             background: linear-gradient(135deg, rgba(22, 160, 133, 0.1) 0%, rgba(14, 118, 100, 0.1) 100%);
             padding: 60px 20px;
             border-radius: 20px;
             margin: 50px 0;
         }
-        
+
         .testimonials h2 {
             text-align: center;
             color: var(--primary);
             font-size: 2.5em;
             margin-bottom: 40px;
         }
-        
+
         .testimonials-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
         }
-        
+
         .testimonial-card {
             background: white;
             padding: 25px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        
+
         .testimonial-text {
             font-style: italic;
             color: var(--dark);
             margin-bottom: 15px;
             line-height: 1.6;
         }
-        
+
         .testimonial-author {
             font-weight: 600;
             color: var(--primary);
         }
-        
+
         .cta-section {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
@@ -83,12 +83,12 @@
             text-align: center;
             margin: 50px 0;
         }
-        
+
         .cta-section h2 {
             font-size: 2.5em;
             margin-bottom: 20px;
         }
-        
+
         .cta-section p {
             font-size: 1.2em;
             margin-bottom: 30px;
@@ -96,14 +96,14 @@
             margin-left: auto;
             margin-right: auto;
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 30px;
             margin: 50px 0;
         }
-        
+
         .stat-card {
             background: white;
             padding: 30px;
@@ -111,14 +111,14 @@
             text-align: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        
+
         .stat-number {
             font-size: 3em;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 10px;
         }
-        
+
         .stat-label {
             color: var(--gray);
             font-weight: 500;
@@ -129,16 +129,16 @@
 
 
     <!-- Header -->
-    
+
 
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-content">
-            <h2>🐾 Bienvenido a Veterinaria Ralah Pets</h2>
+            <h2>Bienestar real para quienes hacen de tu casa un hogar.</h2>
             <p>El bienestar de tu mascota es nuestra prioridad. Ofrecemos atención veterinaria de calidad con profesionales dedicados y tecnología de punta.</p>
             <div class="hero-buttons">
-                <a href="index.php?entidad=auth&accion=mostrarRegistro" class="btn-hero btn-hero-primary">
-                    Registrarme Ahora
+                <a href="#servicios" class="btn-hero btn-hero-primary">
+                    Ver Servicios
                 </a>
                 <a href="#quienes-somos" class="btn-hero btn-hero-secondary">
                     Conocer Más
@@ -185,38 +185,38 @@
         </div>
 
         <!-- Nuestros Servicios -->
-        <section>
+        <section id="servicios" style="scroll-margin-top: 100px;">
             <h2 style="text-align: center; color: var(--primary); font-size: 2.5em; margin-bottom: 40px;">
                 Nuestros Servicios
             </h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🏥</div>
+                    <div class="feature-icon"><i class="fas fa-stethoscope" aria-hidden="true"></i></div>
                     <h3>Consultas Generales</h3>
                     <p>Evaluación completa del estado de salud de tu mascota con diagnóstico profesional.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">💉</div>
+                    <div class="feature-icon"><i class="fas fa-syringe" aria-hidden="true"></i></div>
                     <h3>Vacunación</h3>
                     <p>Programas completos de vacunación para proteger a tu mascota de enfermedades.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🔬</div>
+                    <div class="feature-icon"><i class="fas fa-microscope" aria-hidden="true"></i></div>
                     <h3>Laboratorio</h3>
                     <p>Análisis clínicos y pruebas diagnósticas con equipos de última generación.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">✂️</div>
+                    <div class="feature-icon"><i class="fas fa-kit-medical" aria-hidden="true"></i></div>
                     <h3>Cirugías</h3>
                     <p>Procedimientos quirúrgicos especializados con anestesia segura y recuperación monitoreada.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🛁</div>
+                    <div class="feature-icon"><i class="fas fa-pump-soap" aria-hidden="true"></i></div>
                     <h3>Baño y Peluquería</h3>
                     <p>Servicios de estética y grooming para mantener a tu mascota limpia y hermosa.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🏠</div>
+                    <div class="feature-icon"><i class="fas fa-house-medical" aria-hidden="true"></i></div>
                     <h3>Atención a Domicilio</h3>
                     <p>Llevamos nuestros servicios veterinarios hasta la comodidad de tu hogar.</p>
                 </div>
@@ -253,8 +253,8 @@
             <h2>¿Listo para cuidar de tu mascota?</h2>
             <p>Únete a nuestra comunidad y accede a todos nuestros servicios veterinarios de calidad.</p>
             <div class="hero-buttons">
-                <a href="index.php?entidad=auth&accion=mostrarRegistro" class="btn-hero btn-hero-primary">
-                    Crear mi Cuenta
+                <a href="index.php?entidad=auth&accion=mostrarLogin" class="btn-hero btn-hero-primary">
+                    Iniciar sesión
                 </a>
                 <a href="index.php?entidad=ubicacion&accion=ver" class="btn-hero btn-hero-secondary">
                     Ver Ubicación
@@ -264,7 +264,7 @@
     </div>
 
     <!-- Footer -->
-    
+
 
     <script>
         // Smooth scroll para los enlaces internos
@@ -280,4 +280,23 @@
                 }
             });
         });
+
+        const revealItems = document.querySelectorAll(
+            '.main-container > section, .stats-grid .stat-card, .features-grid .feature-card, .testimonials-grid .testimonial-card'
+        );
+        if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12 });
+
+            revealItems.forEach(item => {
+                item.classList.add('scroll-reveal');
+                revealObserver.observe(item);
+            });
+        }
     </script>

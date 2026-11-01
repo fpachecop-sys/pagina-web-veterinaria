@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Agregar Video - Veterinaria Ralah Pets</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .card {
@@ -73,13 +68,13 @@
             margin-bottom: 20px;
         }
     </style>
-</head>
-<body>
+
+
     <div class="card">
         <h2>🎥 Agregar Nuevo Video</h2>
-        
+
         <div class="alert-info">
-            <strong>💡 Nota:</strong> Para videos de YouTube, usa el formato embed: 
+            <strong>💡 Nota:</strong> Para videos de YouTube, usa el formato embed:
             <code>https://www.youtube.com/embed/VIDEO_ID</code>
         </div>
 
@@ -87,7 +82,7 @@
             <?= \App\Support\Csrf::field() ?>
             <div class="mb-3">
                 <label for="titulo" class="form-label">Título del Video</label>
-                <input type="text" name="titulo" id="titulo" class="form-control" 
+                <input type="text" name="titulo" id="titulo" class="form-control"
                        placeholder="Ej: Cuidados básicos para perros" required>
             </div>
 
@@ -99,7 +94,7 @@
 
             <div class="mb-3">
                 <label for="url_video" class="form-label">URL del Video (Embed)</label>
-                <input type="url" name="url_video" id="url_video" class="form-control" 
+                <input type="url" name="url_video" id="url_video" class="form-control"
                        placeholder="https://www.youtube.com/embed/..." required>
             </div>
 
@@ -118,5 +113,3 @@
             <a href="index.php?entidad=video&accion=listar" class="btn btn-secondary">Cancelar</a>
         </form>
     </div>
-</body>
-</html>

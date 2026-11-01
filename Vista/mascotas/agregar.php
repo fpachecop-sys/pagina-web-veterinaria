@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Agregar Mascota - Veterinaria Ralah Pets</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     .card {
@@ -77,8 +72,8 @@
       transform: translateY(-2px);
     }
   </style>
-</head>
-<body>
+
+
 
 <div class="card">
   <h2>🐾 Agregar Mascota</h2>
@@ -86,7 +81,7 @@
             <?= \App\Support\Csrf::field() ?>
     <div class="mb-3">
       <label for="nombre" class="form-label">Nombre de la Mascota</label>
-      <input type="text" name="nombre" id="nombre" class="form-control" 
+      <input type="text" name="nombre" id="nombre" class="form-control"
              placeholder="Ej: Firulais" required>
     </div>
 
@@ -103,13 +98,13 @@
 
     <div class="mb-3">
       <label for="raza" class="form-label">Raza</label>
-      <input type="text" name="raza" id="raza" class="form-control" 
+      <input type="text" name="raza" id="raza" class="form-control"
              placeholder="Ej: Labrador" required>
     </div>
 
     <div class="mb-3">
       <label for="edad" class="form-label">Edad (años)</label>
-      <input type="number" name="edad" id="edad" class="form-control" 
+      <input type="number" name="edad" id="edad" class="form-control"
              min="0" max="30" placeholder="0" required>
     </div>
 
@@ -129,6 +124,3 @@
     <a href="index.php?entidad=mascota&accion=listar" class="btn btn-secondary">Cancelar</a>
   </form>
 </div>
-
-</body>
-</html>

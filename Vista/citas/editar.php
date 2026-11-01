@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Editar Cita - Veterinaria Ralah Pets</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     .card {
@@ -77,8 +72,8 @@
       transform: translateY(-2px);
     }
   </style>
-</head>
-<body>
+
+
 
 <div class="card">
   <h2>✏️ Editar Cita</h2>
@@ -89,13 +84,13 @@
     <div class="row">
       <div class="col-md-6 mb-3">
         <label for="fecha" class="form-label">Fecha</label>
-        <input type="date" name="fecha" id="fecha" class="form-control" 
+        <input type="date" name="fecha" id="fecha" class="form-control"
                value="<?= htmlspecialchars($cita['fecha']) ?>" required>
       </div>
 
       <div class="col-md-6 mb-3">
         <label for="hora" class="form-label">Hora</label>
-        <input type="time" name="hora" id="hora" class="form-control" 
+        <input type="time" name="hora" id="hora" class="form-control"
                value="<?= htmlspecialchars($cita['hora']) ?>" required>
       </div>
     </div>
@@ -106,7 +101,7 @@
         <?php foreach ($mascotas as $mascota): ?>
           <option value="<?= htmlspecialchars($mascota['id']) ?>"
                   <?= $cita['id_mascota']==$mascota['id']?'selected':'' ?>>
-            <?= htmlspecialchars($mascota['nombre']) ?> 
+            <?= htmlspecialchars($mascota['nombre']) ?>
             (Dueño: <?= htmlspecialchars($mascota['nombre_dueno']) ?>)
           </option>
         <?php endforeach; ?>
@@ -119,7 +114,7 @@
         <?php foreach ($veterinarios as $vet): ?>
           <option value="<?= htmlspecialchars($vet['id']) ?>"
                   <?= $cita['id_veterinario']==$vet['id']?'selected':'' ?>>
-            <?= htmlspecialchars($vet['nombre']) ?> 
+            <?= htmlspecialchars($vet['nombre']) ?>
             (<?= htmlspecialchars($vet['especialidad']) ?>)
           </option>
         <?php endforeach; ?>
@@ -144,6 +139,3 @@
     <a href="index.php?entidad=cita&accion=listar" class="btn btn-secondary">Cancelar</a>
   </form>
 </div>
-
-</body>
-</html>
