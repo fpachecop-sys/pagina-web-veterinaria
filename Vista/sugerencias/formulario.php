@@ -59,7 +59,7 @@
 
 
     <div class="sugerencias-header">
-        <h1>💡 BUZÓN DE SUGERENCIAS</h1>
+        <h1><i class="fas fa-lightbulb" aria-hidden="true"></i> Buzón de Sugerencias</h1>
         <p>Tu opinión es importante para nosotros. ¡Ayúdanos a mejorar!</p>
     </div>
 

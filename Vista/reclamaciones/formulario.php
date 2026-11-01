@@ -76,7 +76,7 @@
 
     <div class="main-container reclamaciones-page">
 <div class="reclamaciones-header">
-        <h1>📝 LIBRO DE RECLAMACIONES</h1>
+        <h1><i class="fas fa-clipboard-list" aria-hidden="true"></i> Libro de Reclamaciones</h1>
         <p>Conforme a lo establecido en el Código de Protección y Defensa del Consumidor</p>
     </div>
 

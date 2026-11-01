@@ -39,7 +39,7 @@ Router::authorize($entidad, $accion, $estaAutenticado, $esAdmin);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veterinaria Ralah Pets - Sistema de Gestión</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .user-menu {
@@ -210,13 +210,6 @@ Router::authorize($entidad, $accion, $estaAutenticado, $esAdmin);
 
     <footer class="main-footer">
         <div class="footer-content">
-            <div class="footer-links">
-                <a href="index.php?entidad=home&accion=ver">Inicio</a>
-                <a href="index.php?entidad=ubicacion&accion=ver">Ubicación</a>
-                <a href="index.php?entidad=video&accion=verPublico">Videos</a>
-                <a href="index.php?entidad=reclamacion&accion=crear">Libro de Reclamaciones</a>
-                <a href="index.php?entidad=sugerencia&accion=crear">Sugerencias</a>
-            </div>
             <p>&copy; <?= date('Y') ?> Veterinaria Ralah Pets - Todos los derechos reservados</p>
             <p style="font-size: 0.875rem; opacity: 0.8;">Cuidando a tus mascotas con amor y profesionalismo</p>
         </div>

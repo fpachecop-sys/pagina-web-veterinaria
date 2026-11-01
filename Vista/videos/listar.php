@@ -93,7 +93,7 @@
     </style>
 
 
-    <h1>🎥 Videos de Servicios y Productos</h1>
+    <h1><i class="fas fa-video" aria-hidden="true"></i> Videos de Servicios y Productos</h1>
 
     <div class="admin-section">
         <p><strong>Panel de Administración</strong></p>

@@ -6,15 +6,15 @@
 
 /* ========== VARIABLES CSS ========== */
 :root {
-    --primary: #16a085;
-    --primary-dark: #0e7664;
-    --secondary: #3498db;
-    --accent: #f39c12;
-    --danger: #e74c3c;
-    --success: #27ae60;
-    --warning: #f39c12;
-    --dark: #2c3e50;
-    --light: #ecf0f1;
+    --primary: #10b981;
+    --primary-dark: #059669;
+    --secondary: #3b82f6;
+    --accent: #f59e0b;
+    --danger: #ef4444;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --dark: #1f2937;
+    --light: #e5eee9;
     --white: #ffffff;
     --gray: #95a5a6;
     
@@ -34,7 +34,9 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background: #f5f7f6;
+    background-color: #f7f9f6;
+    background-image: radial-gradient(rgba(16, 185, 129, .055) 1px, transparent 1px);
+    background-size: 24px 24px;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -81,6 +83,15 @@ body > main {
     font-weight: 700;
     margin: 0;
 }
+
+/* La identidad de marca no debe heredar reglas genéricas de cada vista. */
+.main-header .logo,
+.main-header .logo h1,
+.main-header .logo span,
+.main-header .logo i {
+    color: #059669 !important;
+}
+.main-header .logo h1 { font-size: 1.8em !important; }
 
 /* ========== NAVEGACIÓN ========== */
 .main-nav {
@@ -435,35 +446,160 @@ body:has(.hero-section) .hero-section {
 
 footer.main-footer {
     flex: 0 0 auto;
-    margin-top: 48px;
-    padding: 30px 20px 24px;
-    background: #172a27;
-    color: #e8f2ef;
+    margin-top: auto;
+    padding: 24px 20px;
+    background: #ffffff;
+    color: #475569;
     text-align: center;
-    box-shadow: 0 -8px 24px rgba(22, 42, 39, 0.08);
-}
-
-.main-footer .footer-links {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px 24px;
-    margin-bottom: 18px;
-}
-
-.main-footer .footer-links a {
-    color: #c6ded8;
-    text-decoration: none;
-    font-size: 0.92rem;
-    transition: color 0.2s ease;
-}
-
-.main-footer .footer-links a:hover,
-.main-footer .footer-links a:focus-visible {
-    color: #71e0c6;
+    border-top: 1px solid #e4eee8;
+    box-shadow: 0 -8px 24px rgba(31, 41, 55, 0.035);
 }
 
 .main-footer p + p { margin-top: 4px; }
+
+/* Estilo común para páginas internas, listados y formularios. */
+body > main:not(:has(.hero-section)) {
+    width: min(100% - 40px, 1480px);
+    margin-inline: auto;
+    padding: 28px 0 36px;
+}
+
+body > main:not(:has(.hero-section)) h1,
+body > main:not(:has(.hero-section)) h2 {
+    color: #1f2937 !important;
+    letter-spacing: -0.025em;
+}
+
+body > main:not(:has(.hero-section)) h1 {
+    margin: 0 0 24px;
+    font-size: clamp(1.65rem, 3vw, 2.15rem);
+    font-weight: 750;
+}
+
+body > main:not(:has(.hero-section)) .main-container {
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto 24px;
+    padding: clamp(20px, 3vw, 32px);
+    background: #fff;
+    border: 1px solid #e6eee9;
+    border-radius: 22px;
+    box-shadow: 0 10px 25px rgba(31, 41, 55, 0.05);
+}
+
+body > main:not(:has(.hero-section)) .table-wrapper {
+    width: 100%;
+    margin: 16px auto 24px;
+    overflow-x: auto;
+    border: 1px solid #e5eee9;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 10px 25px rgba(31, 41, 55, 0.05);
+}
+
+body > main:not(:has(.hero-section)) .table-wrapper table {
+    width: 100%;
+    min-width: 720px;
+    margin: 0;
+    border: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: #334155;
+}
+
+body > main:not(:has(.hero-section)) .table-wrapper thead th {
+    padding: 14px 16px;
+    background: #0d9488 !important;
+    color: #fff !important;
+    border: 0;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .045em;
+}
+
+body > main:not(:has(.hero-section)) .table-wrapper thead th:first-child { border-radius: 14px 0 0; }
+body > main:not(:has(.hero-section)) .table-wrapper thead th:last-child { border-radius: 0 14px 0 0; }
+body > main:not(:has(.hero-section)) .table-wrapper tbody td {
+    padding: 13px 16px;
+    border-color: #e8efeb;
+    vertical-align: middle;
+}
+body > main:not(:has(.hero-section)) .table-wrapper tbody tr:nth-child(even) td { background: #f0fdf4; }
+body > main:not(:has(.hero-section)) .table-wrapper tbody tr:hover td { background: #e9f8f0; }
+
+body > main:not(:has(.hero-section)) .form-card,
+body > main:not(:has(.hero-section)) > .card:has(> form),
+body > main:not(:has(.hero-section)) > .p-4:has(> form) {
+    width: min(960px, 75vw);
+    max-width: 960px;
+    margin: 0 auto 28px;
+    padding: clamp(22px, 3vw, 34px);
+    background: #fff;
+    border: 1px solid #e6eee9;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(31, 41, 55, 0.06);
+}
+
+body > main:not(:has(.hero-section)) .form-card label,
+body > main:not(:has(.hero-section)) > .card:has(> form) label,
+body > main:not(:has(.hero-section)) > .p-4:has(> form) label {
+    color: #334155;
+    font-weight: 600;
+}
+
+body > main:not(:has(.hero-section)) input:not([type=checkbox]):not([type=radio]),
+body > main:not(:has(.hero-section)) select,
+body > main:not(:has(.hero-section)) textarea,
+body > main:not(:has(.hero-section)) .form-control {
+    border: 1px solid #d7e4dc !important;
+    border-radius: 10px !important;
+    background-color: #fff;
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+body > main:not(:has(.hero-section)) input:focus,
+body > main:not(:has(.hero-section)) select:focus,
+body > main:not(:has(.hero-section)) textarea:focus,
+body > main:not(:has(.hero-section)) .form-control:focus {
+    border-color: #34d399 !important;
+    box-shadow: 0 0 0 3px rgba(52, 211, 153, .18) !important;
+    outline: none;
+}
+
+body > main:not(:has(.hero-section)) .btn-add,
+body > main:not(:has(.hero-section)) .btn-primary,
+body > main:not(:has(.hero-section)) .btn-success,
+body > main:not(:has(.hero-section)) .btn-submit {
+    background: #10b981 !important;
+    color: #fff !important;
+    border: 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, .16);
+}
+body > main:not(:has(.hero-section)) .btn-warning { background: #f59e0b !important; color: #fff !important; border: 0; }
+body > main:not(:has(.hero-section)) .btn-danger { background: #ef4444 !important; color: #fff !important; border: 0; }
+
+body > main:not(:has(.hero-section)) .reclamaciones-header,
+body > main:not(:has(.hero-section)) .sugerencias-header {
+    width: min(100%, 1060px);
+    margin: 0 auto 20px;
+    padding: 26px 24px;
+    color: #1f2937;
+    background: #eaf8f1;
+    border: 1px solid #d5efe1;
+    border-radius: 18px;
+    box-shadow: 0 8px 22px rgba(31, 41, 55, .04);
+}
+body > main:not(:has(.hero-section)) .reclamaciones-header h1,
+body > main:not(:has(.hero-section)) .sugerencias-header h1 { color: #059669 !important; }
+
+body > main:not(:has(.hero-section)) .video-card {
+    border: 1px solid #e5eee9;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(31, 41, 55, .07);
+}
+body > main:not(:has(.hero-section)) .admin-section { background: #eaf8f1; border: 1px solid #d5efe1; }
+body > main:not(:has(.hero-section)) .badge { border-radius: 999px; }
 
 /* Portada: una identidad editorial más contundente, con bloques y bordes */
 body:has(.hero-section) {
@@ -548,9 +684,13 @@ body:has(.hero-section) .cta-section { background: #167b67; border-color: #18221
         font-size: 0.9em;
     }
     body > main { padding: 20px 12px; }
+    body > main:not(:has(.hero-section)) { width: min(100% - 24px, 1480px); padding: 20px 0 28px; }
+    body > main:not(:has(.hero-section)) .form-card,
+    body > main:not(:has(.hero-section)) > .card:has(> form),
+    body > main:not(:has(.hero-section)) > .p-4:has(> form) { width: 100%; }
     .hero-section { min-height: 400px; padding: 58px 20px; }
     .main-container { padding: 12px; }
-    footer.main-footer { margin-top: 28px; }
+    footer.main-footer { margin-top: auto; }
 }
 
 /* ========== UTILIDADES ========== */

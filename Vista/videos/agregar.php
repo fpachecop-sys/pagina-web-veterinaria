@@ -71,7 +71,7 @@
 
 
     <div class="card">
-        <h2>🎥 Agregar Nuevo Video</h2>
+        <h2><i class="fas fa-video" aria-hidden="true"></i> Agregar Nuevo Video</h2>
 
         <div class="alert-info">
             <strong>💡 Nota:</strong> Para videos de YouTube, usa el formato embed:

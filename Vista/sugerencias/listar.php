@@ -44,7 +44,7 @@
     </style>
 
 
-    <h1>💡 Gestión de Sugerencias</h1>
+    <h1><i class="fas fa-lightbulb" aria-hidden="true"></i> Gestión de Sugerencias</h1>
 
     <div class="table-wrapper">
         <table class="table table-striped table-bordered">

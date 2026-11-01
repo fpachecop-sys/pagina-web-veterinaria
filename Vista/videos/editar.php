@@ -2,7 +2,7 @@
 
 <div class="p-4">
 
-<h2>✏️ Editar Video</h2>
+<h2><i class="fas fa-pen" aria-hidden="true"></i> Editar Video</h2>
 
 <form action="index.php?entidad=video&accion=actualizar" method="POST">
             <?= \App\Support\Csrf::field() ?>

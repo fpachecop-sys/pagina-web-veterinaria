@@ -57,7 +57,7 @@
     </style>
 
 
-    <h1>📋 Gestión de Reclamaciones</h1>
+    <h1><i class="fas fa-clipboard-list" aria-hidden="true"></i> Gestión de Reclamaciones</h1>
 
     <div class="table-wrapper">
         <table class="table table-striped table-bordered">
