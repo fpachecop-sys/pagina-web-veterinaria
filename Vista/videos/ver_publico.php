@@ -1,103 +1,80 @@
-    <style>
-        .videos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
+<div class="main-container media-public-page">
+    <header class="media-public-heading">
+        <p class="eyebrow">Ralah Pets · Consejos y novedades</p>
+        <h1><i class="fas fa-photo-film" aria-hidden="true"></i> Videos y Promociones</h1>
+        <p>Conoce nuestros servicios, mira recomendaciones para el cuidado de tu mascota y descubre nuestras ofertas.</p>
+    </header>
 
-        .video-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .video-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-        }
-
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%;
-            background: #000;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .video-info {
-            padding: 20px;
-        }
-
-        .video-info h3 {
-            color: #2c3e50;
-            font-size: 1.2em;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .video-info p {
-            color: #7f8c8d;
-            font-size: 0.9em;
-            margin-bottom: 15px;
-        }
-
-        .badge {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .badge-primary {
-            background: #3498db;
-            color: white;
-        }
-    </style>
-
-
-
-    <!-- Main Container -->
-    <div class="main-container">
-        <h2 style="color: var(--primary); margin-bottom: 30px;">🎥 Videos Informativos</h2>
-
-        <?php if (empty($datos)): ?>
-            <div style="text-align: center; padding: 60px 20px; background: linear-gradient(135deg, rgba(22, 160, 133, 0.05) 0%, rgba(14, 118, 100, 0.05) 100%); border-radius: 15px;">
-                <div style="font-size: 5em; margin-bottom: 20px;">🎥</div>
-                <h3 style="color: var(--primary); margin-bottom: 15px;">No hay videos disponibles</h3>
-                <p style="color: var(--gray); font-size: 1.1em;">Pronto agregaremos contenido nuevo para ti</p>
+    <section class="media-section" aria-labelledby="promotions-title">
+        <div class="media-section-heading">
+            <div>
+                <p class="eyebrow">Ofertas para consentirlos</p>
+                <h2 id="promotions-title">Promociones</h2>
             </div>
+            <i class="fas fa-tag" aria-hidden="true"></i>
+        </div>
+        <?php if (empty($promociones)): ?>
+            <p class="media-empty-state">Pronto publicaremos nuevas promociones.</p>
         <?php else: ?>
-            <div class="videos-grid">
-                <?php foreach ($datos as $video): ?>
-                    <?php if ($video['activo']): ?>
-                        <div class="video-card">
-                            <div class="video-container">
-                                <iframe
-                                    src="<?= htmlspecialchars($video['url_video']) ?>"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen>
-                                </iframe>
-                            </div>
-                            <div class="video-info">
-                                <h3><?= htmlspecialchars($video['titulo']) ?></h3>
-                                <p><?= htmlspecialchars($video['descripcion']) ?></p>
-                                <span class="badge badge-primary"><?= htmlspecialchars($video['categoria']) ?></span>
-                            </div>
+            <div class="promotion-grid">
+                <?php foreach ($promociones as $promocion): ?>
+                    <article class="promotion-card">
+                        <img src="<?= htmlspecialchars((string) $promocion['imagen'], ENT_QUOTES, 'UTF-8') ?>"
+                             alt="<?= htmlspecialchars((string) $promocion['titulo'], ENT_QUOTES, 'UTF-8') ?>" loading="lazy">
+                        <div class="promotion-card-copy">
+                            <span class="content-category">Promoción</span>
+                            <h3><?= htmlspecialchars((string) $promocion['titulo'], ENT_QUOTES, 'UTF-8') ?></h3>
+                            <p><?= htmlspecialchars((string) $promocion['descripcion'], ENT_QUOTES, 'UTF-8') ?></p>
                         </div>
-                    <?php endif; ?>
+                    </article>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
-    </div>
+    </section>
+
+    <section class="media-section" aria-labelledby="videos-title">
+        <div class="media-section-heading">
+            <div>
+                <p class="eyebrow">Aprende con Ralah Pets</p>
+                <h2 id="videos-title">Videos</h2>
+            </div>
+            <i class="fas fa-circle-play" aria-hidden="true"></i>
+        </div>
+        <?php if (empty($videosPublicos)): ?>
+            <p class="media-empty-state">Pronto agregaremos nuevos videos para ti.</p>
+        <?php else: ?>
+            <div class="videos-grid">
+                <?php foreach ($videosPublicos as $video): ?>
+                    <?php
+                    $url = (string) ($video['url_video'] ?? '');
+                    $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+                    $urlWeb = in_array($scheme, ['http', 'https'], true);
+                    $urlEmbed = Video::urlParaEmbed($url);
+                    ?>
+                    <article class="video-card">
+                        <div class="video-container">
+                            <?php if (Video::esVideoDirecto($video)): ?>
+                                <video controls preload="metadata" playsinline>
+                                    <source src="<?= htmlspecialchars($url, ENT_QUOTES, 'UTF-8') ?>">
+                                    Tu navegador no puede reproducir este video.
+                                </video>
+                            <?php elseif ($urlWeb): ?>
+                                <iframe src="<?= htmlspecialchars($urlEmbed, ENT_QUOTES, 'UTF-8') ?>"
+                                        title="<?= htmlspecialchars((string) $video['titulo'], ENT_QUOTES, 'UTF-8') ?>"
+                                        loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowfullscreen></iframe>
+                            <?php else: ?>
+                                <div class="content-preview-placeholder"><i class="fas fa-circle-play" aria-hidden="true"></i></div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="video-info">
+                            <span class="content-category"><?= htmlspecialchars((string) $video['categoria'], ENT_QUOTES, 'UTF-8') ?></span>
+                            <h3><?= htmlspecialchars((string) $video['titulo'], ENT_QUOTES, 'UTF-8') ?></h3>
+                            <p><?= htmlspecialchars((string) ($video['descripcion'] ?? ''), ENT_QUOTES, 'UTF-8') ?></p>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </section>
+</div>

@@ -39,7 +39,7 @@ Router::authorize($entidad, $accion, $estaAutenticado, $esAdmin);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veterinaria Ralah Pets - Sistema de Gestión</title>
-    <link rel="stylesheet" href="assets/css/styles.css?v=2">
+    <link rel="stylesheet" href="assets/css/styles.css?v=5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .user-menu {
@@ -137,7 +137,7 @@ Router::authorize($entidad, $accion, $estaAutenticado, $esAdmin);
     <header class="main-header">
         <div class="header-container">
             <a href="index.php?entidad=home&accion=ver" class="logo">
-                <i class="fas fa-paw"></i>
+                <img class="brand-logo" src="assets/img/RALAH_LOGO.png" alt="">
                 <div>
                     <h1>Ralah Pets</h1>
                     <span>Clínica Veterinaria</span>
@@ -156,21 +156,21 @@ Router::authorize($entidad, $accion, $estaAutenticado, $esAdmin);
                         <li><a class="nav-link <?= $entidad === 'admin' && in_array($accion, ['usuarios', 'listarUsuarios'], true) ? 'active' : '' ?>" href="index.php?entidad=admin&accion=usuarios"><i class="fas fa-user-cog"></i> Usuarios</a></li>
                         <li><a class="nav-link <?= $entidad === 'reclamacion' ? 'active' : '' ?>" href="index.php?entidad=reclamacion&accion=listar"><i class="fas fa-book"></i> Reclamaciones</a></li>
                         <li><a class="nav-link <?= $entidad === 'sugerencia' ? 'active' : '' ?>" href="index.php?entidad=sugerencia&accion=listar"><i class="fas fa-lightbulb"></i> Sugerencias</a></li>
-                        <li><a class="nav-link <?= $entidad === 'video' ? 'active' : '' ?>" href="index.php?entidad=video&accion=listar"><i class="fas fa-video"></i> Videos</a></li>
+                        <li><a class="nav-link <?= $entidad === 'video' ? 'active' : '' ?>" href="index.php?entidad=video&accion=listar"><i class="fas fa-photo-film"></i> Videos y Promociones</a></li>
                         <li><a class="nav-link <?= $entidad === 'ubicacion' ? 'active' : '' ?>" href="index.php?entidad=ubicacion&accion=ver"><i class="fas fa-map-marker-alt"></i> Ubicación</a></li>
                     <?php elseif ($estaAutenticado): ?>
                         <li><a class="nav-link <?= $entidad === 'usuario' && $accion === 'dashboard' ? 'active' : '' ?>" href="index.php?entidad=usuario&accion=dashboard"><i class="fas fa-home"></i> Inicio</a></li>
                         <li><a class="nav-link <?= $accion === 'misMascotas' ? 'active' : '' ?>" href="index.php?entidad=usuario&accion=misMascotas"><i class="fas fa-paw"></i> Mis Mascotas</a></li>
                         <li><a class="nav-link <?= $accion === 'misCitas' ? 'active' : '' ?>" href="index.php?entidad=usuario&accion=misCitas"><i class="fas fa-calendar"></i> Mis Citas</a></li>
                         <li><a class="nav-link <?= $entidad === 'ubicacion' ? 'active' : '' ?>" href="index.php?entidad=ubicacion&accion=ver"><i class="fas fa-map-marker-alt"></i> Ubicación</a></li>
-                        <li><a class="nav-link <?= $entidad === 'video' ? 'active' : '' ?>" href="index.php?entidad=video&accion=verPublico"><i class="fas fa-video"></i> Videos</a></li>
+                        <li><a class="nav-link <?= $entidad === 'video' ? 'active' : '' ?>" href="index.php?entidad=video&accion=verPublico"><i class="fas fa-photo-film"></i> Videos y Promociones</a></li>
                         <li><a class="nav-link <?= $entidad === 'reclamacion' ? 'active' : '' ?>" href="index.php?entidad=reclamacion&accion=crear"><i class="fas fa-book"></i> Reclamaciones</a></li>
                         <li><a class="nav-link <?= $entidad === 'sugerencia' ? 'active' : '' ?>" href="index.php?entidad=sugerencia&accion=crear"><i class="fas fa-lightbulb"></i> Sugerencias</a></li>
                         <li><a class="nav-link <?= $entidad === 'usuario' && in_array($accion, ['perfil', 'verPerfil'], true) ? 'active' : '' ?>" href="index.php?entidad=usuario&accion=perfil"><i class="fas fa-user"></i> Mi Perfil</a></li>
                     <?php else: ?>
                         <li><a class="nav-link <?= $entidad === 'home' ? 'active' : '' ?>" href="index.php?entidad=home&accion=ver"><i class="fas fa-home"></i> Inicio</a></li>
                         <li><a class="nav-link <?= $entidad === 'veterinario' ? 'active' : '' ?>" href="index.php?entidad=veterinario&accion=verPublico"><i class="fas fa-user-md"></i> Veterinarios</a></li>
-                        <li><a class="nav-link <?= $entidad === 'video' ? 'active' : '' ?>" href="index.php?entidad=video&accion=verPublico"><i class="fas fa-video"></i> Videos</a></li>
+                        <li><a class="nav-link <?= $entidad === 'video' ? 'active' : '' ?>" href="index.php?entidad=video&accion=verPublico"><i class="fas fa-photo-film"></i> Videos y Promociones</a></li>
                         <li><a class="nav-link <?= $entidad === 'ubicacion' ? 'active' : '' ?>" href="index.php?entidad=ubicacion&accion=ver"><i class="fas fa-map-marker-alt"></i> Ubicación</a></li>
                         <li><a class="nav-link <?= $entidad === 'reclamacion' ? 'active' : '' ?>" href="index.php?entidad=reclamacion&accion=crear"><i class="fas fa-book"></i> Reclamaciones</a></li>
                         <li><a class="nav-link <?= $entidad === 'sugerencia' ? 'active' : '' ?>" href="index.php?entidad=sugerencia&accion=crear"><i class="fas fa-lightbulb"></i> Sugerencias</a></li>

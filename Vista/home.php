@@ -185,41 +185,59 @@
         </div>
 
         <!-- Nuestros Servicios -->
-        <section id="servicios" style="scroll-margin-top: 100px;">
-            <h2 style="text-align: center; color: var(--primary); font-size: 2.5em; margin-bottom: 40px;">
-                Nuestros Servicios
-            </h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-stethoscope" aria-hidden="true"></i></div>
-                    <h3>Consultas Generales</h3>
-                    <p>Evaluación completa del estado de salud de tu mascota con diagnóstico profesional.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-syringe" aria-hidden="true"></i></div>
-                    <h3>Vacunación</h3>
-                    <p>Programas completos de vacunación para proteger a tu mascota de enfermedades.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-microscope" aria-hidden="true"></i></div>
-                    <h3>Laboratorio</h3>
-                    <p>Análisis clínicos y pruebas diagnósticas con equipos de última generación.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-kit-medical" aria-hidden="true"></i></div>
-                    <h3>Cirugías</h3>
-                    <p>Procedimientos quirúrgicos especializados con anestesia segura y recuperación monitoreada.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-pump-soap" aria-hidden="true"></i></div>
-                    <h3>Baño y Peluquería</h3>
-                    <p>Servicios de estética y grooming para mantener a tu mascota limpia y hermosa.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon"><i class="fas fa-house-medical" aria-hidden="true"></i></div>
-                    <h3>Atención a Domicilio</h3>
-                    <p>Llevamos nuestros servicios veterinarios hasta la comodidad de tu hogar.</p>
-                </div>
+        <?php
+        $servicios = [
+            ['nombre' => 'Medicina General', 'imagenes' => ['assets/img/servicios/medicina-general', 'assets/img/medicina-general'], 'icono' => 'fa-stethoscope'],
+            ['nombre' => 'Cirugía Especializada', 'imagenes' => ['assets/img/servicios/cirugia-especializada', 'assets/img/cirugia-especializada'], 'icono' => 'fa-kit-medical'],
+            ['nombre' => 'Medicina Complementaria', 'imagenes' => ['assets/img/servicios/medicina-complementaria', 'assets/img/medicina-complementaria'], 'icono' => 'fa-heart-pulse'],
+            ['nombre' => 'Diagnóstico por Imágenes', 'imagenes' => ['assets/img/servicios/diagnostico-imagenes', 'assets/img/diagnostico-imagenes'], 'icono' => 'fa-x-ray'],
+            ['nombre' => 'Laboratorio', 'imagenes' => ['assets/img/servicios/laboratorio', 'assets/img/laboratorio'], 'icono' => 'fa-microscope'],
+            ['nombre' => 'Otros Servicios', 'imagenes' => ['assets/img/servicios/otros-servicios', 'assets/img/otros-servicios'], 'fallback' => 'assets/img/Imagen_CorteCabelloPerro', 'icono' => 'fa-pump-soap'],
+        ];
+        ?>
+        <section id="servicios" class="services-section" style="scroll-margin-top: 100px;">
+            <header class="services-heading">
+                <p class="eyebrow">Somos veterinarios especialistas</p>
+                <h2>Nuestros Servicios</h2>
+                <p>Atención cercana y especializada para cada etapa de la vida de tu mascota.</p>
+            </header>
+            <div class="services-grid">
+                <?php foreach ($servicios as $servicio): ?>
+                    <?php
+                    $imagenServicio = '';
+                    foreach ($servicio['imagenes'] as $baseServicio) {
+                        foreach (['jpg', 'jpeg', 'png', 'webp'] as $extensionServicio) {
+                            $candidataServicio = $baseServicio . '.' . $extensionServicio;
+                            if (is_file(__DIR__ . '/../' . $candidataServicio)) {
+                                $imagenServicio = $candidataServicio;
+                                break 2;
+                            }
+                        }
+                    }
+                    if ($imagenServicio === '' && isset($servicio['fallback'])) {
+                        foreach (['jpg', 'jpeg', 'png', 'webp'] as $extensionServicio) {
+                            $candidataServicio = $servicio['fallback'] . '.' . $extensionServicio;
+                            if (is_file(__DIR__ . '/../' . $candidataServicio)) {
+                                $imagenServicio = $candidataServicio;
+                                break;
+                            }
+                        }
+                    }
+                    ?>
+                    <article class="service-tile">
+                        <div class="service-image-frame">
+                            <?php if ($imagenServicio !== ''): ?>
+                                <img src="<?= htmlspecialchars($imagenServicio, ENT_QUOTES, 'UTF-8') ?>"
+                                     alt="Servicio veterinario: <?= htmlspecialchars($servicio['nombre'], ENT_QUOTES, 'UTF-8') ?>" loading="lazy">
+                            <?php else: ?>
+                                <div class="service-image-placeholder" aria-hidden="true">
+                                    <i class="fas <?= htmlspecialchars($servicio['icono'], ENT_QUOTES, 'UTF-8') ?>"></i>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <h3><?= htmlspecialchars($servicio['nombre'], ENT_QUOTES, 'UTF-8') ?></h3>
+                    </article>
+                <?php endforeach; ?>
             </div>
         </section>
 
@@ -253,8 +271,8 @@
             <h2>¿Listo para cuidar de tu mascota?</h2>
             <p>Únete a nuestra comunidad y accede a todos nuestros servicios veterinarios de calidad.</p>
             <div class="hero-buttons">
-                <a href="index.php?entidad=auth&accion=mostrarLogin" class="btn-hero btn-hero-primary">
-                    Iniciar sesión
+                <a href="#servicios" class="btn-hero btn-hero-primary">
+                    Ver Servicios
                 </a>
                 <a href="index.php?entidad=ubicacion&accion=ver" class="btn-hero btn-hero-secondary">
                     Ver Ubicación
@@ -282,7 +300,7 @@
         });
 
         const revealItems = document.querySelectorAll(
-            '.main-container > section, .stats-grid .stat-card, .features-grid .feature-card, .testimonials-grid .testimonial-card'
+            '.main-container > section, .stats-grid .stat-card, .services-grid .service-tile, .testimonials-grid .testimonial-card'
         );
         if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             const revealObserver = new IntersectionObserver((entries, observer) => {

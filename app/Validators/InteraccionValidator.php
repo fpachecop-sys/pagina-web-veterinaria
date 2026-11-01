@@ -84,7 +84,7 @@ final class InteraccionValidator
     /**
      * @param array<string, mixed> $data
      */
-    public static function validateVideo(array $data): ?string
+    public static function validateVideo(array $data, bool $allowEmptyUrl = false): ?string
     {
         $titulo = trim((string) ($data['titulo'] ?? ''));
         $url = trim((string) ($data['url_video'] ?? $data['url'] ?? ''));
@@ -95,8 +95,14 @@ final class InteraccionValidator
         if (mb_strlen($titulo) > 150) {
             return 'El título del video es obligatorio (máximo 150 caracteres).';
         }
-        if ($url === '' || !filter_var($url, FILTER_VALIDATE_URL)) {
+        if ($url === '' && !$allowEmptyUrl) {
             return 'Debe ingresar una URL válida para el video.';
+        }
+        if ($url !== '') {
+            $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+            if (!filter_var($url, FILTER_VALIDATE_URL) || !in_array($scheme, ['http', 'https'], true)) {
+                return 'Debe ingresar una URL http o https válida para el video.';
+            }
         }
 
         return null;
